@@ -25,9 +25,21 @@ struct AppTabView: View {
                     Label("Profile", systemImage: "person.crop.circle")
                 }
         }
+        .tabViewDefaultBackground()
     }
 }
 
 #Preview {
     AppTabView()
+}
+
+// iOS 15 changes the default appearance of Tab bars from opaque to transparent. To make them opaque:
+extension View {
+    func tabViewDefaultBackground() -> some View {
+        self.onAppear {
+            let tabBarAppearance = UITabBarAppearance()
+            tabBarAppearance.configureWithDefaultBackground()
+            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        }
+    }
 }
