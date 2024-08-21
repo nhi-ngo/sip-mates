@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LocationDetailView: View {
-    
+        
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
@@ -17,12 +17,13 @@ struct LocationDetailView: View {
                     .scaledToFill()
                     .frame(height: 120)
                 
-                HStack {
+                HStack() {
                     Label("123 Main Street", systemImage: "mappin.and.ellipse")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     
                     Spacer()
+
                 }
                 .padding(.horizontal)
                 
@@ -43,9 +44,7 @@ struct LocationDetailView: View {
                             LocationActionButton(imageName: "location.fill")
                         })
                         
-                        Button(action: {
-                            //TODO
-                        }, label: {
+                        Link(destination: URL(string: "https://www.apple.com")!, label: {
                             LocationActionButton(imageName: "network")
                         })
                         
@@ -64,6 +63,16 @@ struct LocationDetailView: View {
                 }
                 .padding(.horizontal)
                 
+                Text("Who's Here?").bold().font(.title2)
+                
+                LazyVGrid(columns: [GridItem](repeating: GridItem(.flexible()), count: 3), content: {
+                    FirstNameAvatarView(firstName: "Nhi")
+                    FirstNameAvatarView(firstName: "Swift")
+                    FirstNameAvatarView(firstName: "NiceniceniceNicenicenice")
+                    FirstNameAvatarView(firstName: "Swift")
+                    FirstNameAvatarView(firstName: "Swift")
+                    FirstNameAvatarView(firstName: "Swift")
+                })
                 
                 Spacer()
                 
@@ -93,6 +102,22 @@ struct LocationActionButton: View {
                 .scaledToFit()
                 .foregroundStyle(.white)
                 .frame(width: 22, height: 22)
+        }
+    }
+}
+
+struct FirstNameAvatarView: View {
+    
+    var firstName: String
+    
+    var body: some View {
+        VStack {
+            AvatarView(size: 64)
+            
+            Text(firstName)
+                .bold()
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
     }
 }
