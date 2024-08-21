@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		37BEFBED2C74F4F900D4B717 /* Color+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBEC2C74F4F900D4B717 /* Color+Ext.swift */; };
+		379CD3BD2C752F7E00377157 /* LocationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379CD3BC2C752F7E00377157 /* LocationDetailView.swift */; };
 		37BEFBEF2C74F57300D4B717 /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBEE2C74F57300D4B717 /* AppTabView.swift */; };
 		37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */; };
 		37BEFBF32C74F5D600D4B717 /* LocationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF22C74F5D600D4B717 /* LocationListView.swift */; };
@@ -18,8 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		379CD3BC2C752F7E00377157 /* LocationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailView.swift; sourceTree = "<group>"; };
 		37BEFBEB2C74F21C00D4B717 /* SipMates.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SipMates.entitlements; sourceTree = "<group>"; };
-		37BEFBEC2C74F4F900D4B717 /* Color+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Ext.swift"; sourceTree = "<group>"; };
 		37BEFBEE2C74F57300D4B717 /* AppTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabView.swift; sourceTree = "<group>"; };
 		37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapView.swift; sourceTree = "<group>"; };
 		37BEFBF22C74F5D600D4B717 /* LocationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListView.swift; sourceTree = "<group>"; };
@@ -61,10 +61,10 @@
 			isa = PBXGroup;
 			children = (
 				37BEFBEB2C74F21C00D4B717 /* SipMates.entitlements */,
-				37BEFBEC2C74F4F900D4B717 /* Color+Ext.swift */,
 				37BEFBEE2C74F57300D4B717 /* AppTabView.swift */,
 				37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */,
 				37BEFBF22C74F5D600D4B717 /* LocationListView.swift */,
+				379CD3BC2C752F7E00377157 /* LocationDetailView.swift */,
 				37BEFBF42C74F5E400D4B717 /* ProfileView.swift */,
 				37FE3BB22C73E68900784FB8 /* SipMatesApp.swift */,
 				37FE3BB62C73E68C00784FB8 /* Assets.xcassets */,
@@ -154,9 +154,9 @@
 				37FE3BB32C73E68900784FB8 /* SipMatesApp.swift in Sources */,
 				37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */,
 				37BEFBF32C74F5D600D4B717 /* LocationListView.swift in Sources */,
+				379CD3BD2C752F7E00377157 /* LocationDetailView.swift in Sources */,
 				37BEFBEF2C74F57300D4B717 /* AppTabView.swift in Sources */,
 				37BEFBF52C74F5E400D4B717 /* ProfileView.swift in Sources */,
-				37BEFBED2C74F4F900D4B717 /* Color+Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
