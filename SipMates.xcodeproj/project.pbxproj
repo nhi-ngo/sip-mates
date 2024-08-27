@@ -12,6 +12,9 @@
 		37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */; };
 		37BEFBF32C74F5D600D4B717 /* LocationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF22C74F5D600D4B717 /* LocationListView.swift */; };
 		37BEFBF52C74F5E400D4B717 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF42C74F5E400D4B717 /* ProfileView.swift */; };
+		37E00CEA2C7E7B5A00AE88EE /* LocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00CE92C7E7B5A00AE88EE /* LocationCell.swift */; };
+		37E00CEC2C7E7BAD00AE88EE /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00CEB2C7E7BAD00AE88EE /* AvatarView.swift */; };
+		37E00CEE2C7E814400AE88EE /* SMButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00CED2C7E814400AE88EE /* SMButton.swift */; };
 		37FE3BB32C73E68900784FB8 /* SipMatesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FE3BB22C73E68900784FB8 /* SipMatesApp.swift */; };
 		37FE3BB72C73E68C00784FB8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37FE3BB62C73E68C00784FB8 /* Assets.xcassets */; };
 		37FE3BBA2C73E68C00784FB8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37FE3BB92C73E68C00784FB8 /* Preview Assets.xcassets */; };
@@ -24,6 +27,9 @@
 		37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapView.swift; sourceTree = "<group>"; };
 		37BEFBF22C74F5D600D4B717 /* LocationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListView.swift; sourceTree = "<group>"; };
 		37BEFBF42C74F5E400D4B717 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		37E00CE92C7E7B5A00AE88EE /* LocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCell.swift; sourceTree = "<group>"; };
+		37E00CEB2C7E7BAD00AE88EE /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
+		37E00CED2C7E814400AE88EE /* SMButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMButton.swift; sourceTree = "<group>"; };
 		37FE3BAF2C73E68900784FB8 /* SipMates.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SipMates.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FE3BB22C73E68900784FB8 /* SipMatesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipMatesApp.swift; sourceTree = "<group>"; };
 		37FE3BB62C73E68C00784FB8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -41,6 +47,45 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		37E00CEF2C7E821900AE88EE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				37E00CF22C7E826800AE88EE /* CustomViews */,
+				37E00CF12C7E825100AE88EE /* Cells */,
+				37E00CF02C7E822400AE88EE /* Screens */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		37E00CF02C7E822400AE88EE /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				37BEFBEE2C74F57300D4B717 /* AppTabView.swift */,
+				37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */,
+				37BEFBF22C74F5D600D4B717 /* LocationListView.swift */,
+				379CD3BC2C752F7E00377157 /* LocationDetailView.swift */,
+				37BEFBF42C74F5E400D4B717 /* ProfileView.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		37E00CF12C7E825100AE88EE /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				37E00CE92C7E7B5A00AE88EE /* LocationCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		37E00CF22C7E826800AE88EE /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				37E00CEB2C7E7BAD00AE88EE /* AvatarView.swift */,
+				37E00CED2C7E814400AE88EE /* SMButton.swift */,
+			);
+			path = CustomViews;
+			sourceTree = "<group>";
+		};
 		37FE3BA62C73E68900784FB8 = {
 			isa = PBXGroup;
 			children = (
@@ -61,11 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				37BEFBEB2C74F21C00D4B717 /* SipMates.entitlements */,
-				37BEFBEE2C74F57300D4B717 /* AppTabView.swift */,
-				37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */,
-				37BEFBF22C74F5D600D4B717 /* LocationListView.swift */,
-				379CD3BC2C752F7E00377157 /* LocationDetailView.swift */,
-				37BEFBF42C74F5E400D4B717 /* ProfileView.swift */,
+				37E00CEF2C7E821900AE88EE /* Views */,
 				37FE3BB22C73E68900784FB8 /* SipMatesApp.swift */,
 				37FE3BB62C73E68C00784FB8 /* Assets.xcassets */,
 				37FE3BB82C73E68C00784FB8 /* Preview Content */,
@@ -155,7 +196,10 @@
 				37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */,
 				37BEFBF32C74F5D600D4B717 /* LocationListView.swift in Sources */,
 				379CD3BD2C752F7E00377157 /* LocationDetailView.swift in Sources */,
+				37E00CEA2C7E7B5A00AE88EE /* LocationCell.swift in Sources */,
+				37E00CEC2C7E7BAD00AE88EE /* AvatarView.swift in Sources */,
 				37BEFBEF2C74F57300D4B717 /* AppTabView.swift in Sources */,
+				37E00CEE2C7E814400AE88EE /* SMButton.swift in Sources */,
 				37BEFBF52C74F5E400D4B717 /* ProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

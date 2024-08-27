@@ -1,44 +1,11 @@
 //
-//  LocationListView.swift
+//  LocationCell.swift
 //  SipMates
 //
-//  Created by Nhi Ngo on 8/20/24.
+//  Created by Nhi Ngo on 8/27/24.
 //
 
 import SwiftUI
-
-struct LocationListView: View {
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach(0..<10) { location in
-                   NavigationLink(destination: LocationDetailView(), label: {
-                       LocationCell()
-                   })
-                }
-            }
-            .listStyle(.plain)
-            .navigationTitle("Grub Spots")
-        }
-    }
-}
-
-#Preview {
-    LocationListView()
-}
-
-struct AvatarView: View {
-    
-    var size: CGFloat
-    
-    var body: some View {
-        Image("default-avatar")
-            .resizable()
-            .scaledToFit()
-            .frame(width: size, height: size)
-            .clipShape(Circle())
-    }
-}
 
 struct LocationCell: View {
     
@@ -69,4 +36,8 @@ struct LocationCell: View {
             .padding(.leading, 5)
         }
     }
+}
+
+#Preview {
+    LocationCell()
 }

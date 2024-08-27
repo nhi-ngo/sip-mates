@@ -24,25 +24,15 @@ struct ProfileView: View {
                 HStack(spacing: 15) {
                     ZStack {
                         AvatarView(size: 84)
-                        
-                        Image(systemName: "square.and.pencil")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 14, height: 14)
-                            .foregroundStyle(.white)
-                            .offset(y: 30)
+                        EditImage()
                     }
                     
                     VStack(spacing: 1) {
                         TextField("First Name", text: $firstName)
-                            .font(.system(size: 32, weight: .bold))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.75)
+                            .profileNameStyle()
                         
                         TextField("Last Name", text: $lastName)
-                            .font(.system(size: 26, weight: .semibold))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.75)
+                            .profileNameStyle()
                         
                         TextField("Company Name", text: $companyName)
                     }
@@ -54,24 +44,7 @@ struct ProfileView: View {
             .padding(.horizontal)
             
             VStack(spacing: 8) {
-                HStack {
-                    Text("Bio: ")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                    +
-                    Text("\(100 - bio.count)")
-                        .bold()
-                        .font(.callout)
-                        .foregroundStyle(.brandPrimary)
-                    +
-                    Text(" characters remain")
-                        .foregroundStyle(.secondary)
-                    
-                    Spacer()
-                    
-                    Image(systemName: "mappin.and.ellipse")
-                    Text("Check Out")
-                }
+                CharactersRemainView(currentCount: bio.count)
                 
                 TextEditor(text: $bio)
                     .disabled(100 - bio.count == 0)
@@ -84,13 +57,7 @@ struct ProfileView: View {
                 Button(action: {
                     
                 }, label: {
-                    Text("Create Profile")
-                        .bold()
-                        .frame(width: 280, height: 44)
-                        .background(.brandPrimary)
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                    
+                    SMButton(title: "Create Profile")
                 })
             }
             .padding()
@@ -104,5 +71,56 @@ struct ProfileView: View {
 #Preview {
     NavigationStack {
         ProfileView()
+    }
+}
+
+struct ProfileNameStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 26, weight: .semibold))
+            .lineLimit(1)
+            .minimumScaleFactor(0.75)
+    }
+}
+
+extension View {
+    func profileNameStyle() -> some View {
+        modifier(ProfileNameStyle())
+    }
+}
+
+struct EditImage: View {
+    var body: some View {
+        Image(systemName: "square.and.pencil")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 14, height: 14)
+            .foregroundStyle(.white)
+            .offset(y: 30)
+    }
+}
+
+struct CharactersRemainView: View {
+    var currentCount: Int
+    
+    var body: some View {
+        HStack {
+            Text("Bio: ")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+            +
+            Text("\(100 - currentCount)")
+                .bold()
+                .font(.callout)
+                .foregroundStyle(.brandPrimary)
+            +
+            Text(" characters remain")
+                .foregroundStyle(.secondary)
+            
+            Spacer()
+            
+            Image(systemName: "mappin.and.ellipse")
+            Text("Check Out")
+        }
     }
 }

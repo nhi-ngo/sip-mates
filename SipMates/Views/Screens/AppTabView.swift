@@ -20,10 +20,14 @@ struct AppTabView: View {
                     Label("Locations", systemImage: "building")
                 }
             
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person.crop.circle")
-                }
+            NavigationStack {
+                ProfileView()
+            }
+            .tabItem {
+                Label("Profile", systemImage: "person.crop.circle")
+            }
+            .navigationTitle("Profile")
+            
         }
         .tabViewDefaultBackground()
     }
