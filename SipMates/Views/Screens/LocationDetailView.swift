@@ -9,6 +9,8 @@ import SwiftUI
 
 struct LocationDetailView: View {
     
+    var location: SMLocation
+    
     var body: some View {
         VStack(spacing: 16) {
             Image("default-banner-asset")
@@ -17,7 +19,7 @@ struct LocationDetailView: View {
                 .frame(height: 120)
             
             HStack() {
-                Label("123 Main Street", systemImage: "mappin.and.ellipse")
+                Label(location.address, systemImage: "mappin.and.ellipse")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 
@@ -26,7 +28,7 @@ struct LocationDetailView: View {
             }
             .padding(.horizontal)
             
-            Text("This is a text description. This is a text description. This is a text description. This is a text description.")
+            Text(location.description)
                 .lineLimit(3)
                 .minimumScaleFactor(0.75)
                 .frame(height: 70)
@@ -44,7 +46,7 @@ struct LocationDetailView: View {
                         LocationActionButton(imageName: "location.fill")
                     })
                     
-                    Link(destination: URL(string: "https://www.apple.com")!, label: {
+                    Link(destination: URL(string: location.websiteURL)!, label: {
                         LocationActionButton(imageName: "network")
                     })
                     
@@ -78,14 +80,14 @@ struct LocationDetailView: View {
             
             Spacer()
         }
-        .navigationTitle("Location")
+        .navigationTitle(location.name)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
     NavigationStack {
-        LocationDetailView()
+        LocationDetailView(location: SMLocation(record: MockData.location))
     }
 }
 

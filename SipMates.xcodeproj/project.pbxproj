@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		37186FEA2C80C9AA00B1F118 /* SMLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FE92C80C9AA00B1F118 /* SMLocation.swift */; };
+		37186FEC2C80F4EF00B1F118 /* SMProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FEB2C80F4EF00B1F118 /* SMProfile.swift */; };
+		37186FEE2C80F6C600B1F118 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FED2C80F6C600B1F118 /* MockData.swift */; };
 		379CD3BD2C752F7E00377157 /* LocationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379CD3BC2C752F7E00377157 /* LocationDetailView.swift */; };
 		37BEFBEF2C74F57300D4B717 /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBEE2C74F57300D4B717 /* AppTabView.swift */; };
 		37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */; };
@@ -23,6 +25,8 @@
 
 /* Begin PBXFileReference section */
 		37186FE92C80C9AA00B1F118 /* SMLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMLocation.swift; sourceTree = "<group>"; };
+		37186FEB2C80F4EF00B1F118 /* SMProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMProfile.swift; sourceTree = "<group>"; };
+		37186FED2C80F6C600B1F118 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		379CD3BC2C752F7E00377157 /* LocationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailView.swift; sourceTree = "<group>"; };
 		37BEFBEB2C74F21C00D4B717 /* SipMates.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SipMates.entitlements; sourceTree = "<group>"; };
 		37BEFBEE2C74F57300D4B717 /* AppTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabView.swift; sourceTree = "<group>"; };
@@ -53,6 +57,8 @@
 			isa = PBXGroup;
 			children = (
 				37186FE92C80C9AA00B1F118 /* SMLocation.swift */,
+				37186FEB2C80F4EF00B1F118 /* SMProfile.swift */,
+				37186FED2C80F6C600B1F118 /* MockData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -203,6 +209,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37186FEC2C80F4EF00B1F118 /* SMProfile.swift in Sources */,
+				37186FEE2C80F6C600B1F118 /* MockData.swift in Sources */,
 				37FE3BB32C73E68900784FB8 /* SipMatesApp.swift in Sources */,
 				37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */,
 				37BEFBF32C74F5D600D4B717 /* LocationListView.swift in Sources */,
