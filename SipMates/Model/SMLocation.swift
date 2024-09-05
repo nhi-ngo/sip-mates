@@ -7,7 +7,7 @@
 
 import CloudKit
 
-struct SMLocation {
+struct SMLocation: Identifiable {
     static let kName = "name"
     static let kDescription = "description"
     static let kSquareAsset = "squareAsset"
@@ -17,7 +17,7 @@ struct SMLocation {
     static let kWebsiteURL = "websiteURL"
     static let kPhoneNumber = "phoneNumber"
     
-    let ckRecordId: CKRecord.ID
+    let id: CKRecord.ID
     let name: String
     let description: String
     let squareAsset: CKAsset!
@@ -28,7 +28,7 @@ struct SMLocation {
     let phoneNumber: String
     
     init(record: CKRecord) {
-        ckRecordId  = record.recordID
+        id  = record.recordID
         name         = record[SMLocation.kName] as? String ?? "N/A"
         description = record[SMLocation.kDescription] as? String ?? "N/A"
         squareAsset = record[SMLocation.kSquareAsset] as? CKAsset

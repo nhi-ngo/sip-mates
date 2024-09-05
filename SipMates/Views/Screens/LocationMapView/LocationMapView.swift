@@ -9,39 +9,37 @@ import SwiftUI
 import MapKit
 
 struct LocationMapView: View {
-    
-    @StateObject var viewModel = LocationMapViewModel()
-    
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.331516, longitude: -121.891054),
-        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-    )
-    
+    @EnvironmentObject private var locationManager: LocationManager
+    @StateObject  private var viewModel = LocationMapViewModel()
     @State private var fetchError: SipMatesError = .unableToGetLocations
     
     var body: some View {
         ZStack {
-            Map(initialPosition: .region(region))
-                .ignoresSafeArea()
-                .onMapCameraChange(frequency: .continuous) {
-                    //                    print($0.region)
+            Map(initialPosition: .region(viewModel.region)) {
+                ForEach(locationManager.locations) { location in
+                    Marker(location.name, coordinate: location.location.coordinate)
+                        .tint(.brandPrimary)
                 }
-        }
-        .task {
-            do {
-                viewModel.getLocations()
-            } catch SipMatesError.unableToGetLocations {
-                fetchError = .unableToGetLocations
             }
-        }
-        .alert(isPresented: $viewModel.isShowingAlert, error: fetchError) { fetchError in
-            // Action - OK button to dismiss
-        } message: { fetchError in
-            Text(fetchError.failureReason)
+            .task {
+                if locationManager.locations.isEmpty {
+                    do {
+                        viewModel.getLocations(for: locationManager)
+                    } catch SipMatesError.unableToGetLocations {
+                        fetchError = .unableToGetLocations
+                    }
+                }
+            }
+            .alert(isPresented: $viewModel.isShowingAlert, error: fetchError) { fetchError in
+                // Action - OK button to dismiss
+            } message: { fetchError in
+                Text(fetchError.failureReason)
+            }
         }
     }
 }
 
 #Preview {
     LocationMapView()
+        .environmentObject(LocationManager())
 }

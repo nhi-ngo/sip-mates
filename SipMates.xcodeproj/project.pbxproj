@@ -18,6 +18,7 @@
 		37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */; };
 		37BEFBF32C74F5D600D4B717 /* LocationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF22C74F5D600D4B717 /* LocationListView.swift */; };
 		37BEFBF52C74F5E400D4B717 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF42C74F5E400D4B717 /* ProfileView.swift */; };
+		37DF83DE2C89AB8400A44C40 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DF83DD2C89AB8400A44C40 /* LocationManager.swift */; };
 		37E00CEA2C7E7B5A00AE88EE /* LocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00CE92C7E7B5A00AE88EE /* LocationCell.swift */; };
 		37E00CEC2C7E7BAD00AE88EE /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00CEB2C7E7BAD00AE88EE /* AvatarView.swift */; };
 		37E00CEE2C7E814400AE88EE /* SMButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E00CED2C7E814400AE88EE /* SMButton.swift */; };
@@ -39,6 +40,7 @@
 		37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapView.swift; sourceTree = "<group>"; };
 		37BEFBF22C74F5D600D4B717 /* LocationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListView.swift; sourceTree = "<group>"; };
 		37BEFBF42C74F5E400D4B717 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		37DF83DD2C89AB8400A44C40 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		37E00CE92C7E7B5A00AE88EE /* LocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCell.swift; sourceTree = "<group>"; };
 		37E00CEB2C7E7BAD00AE88EE /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		37E00CED2C7E814400AE88EE /* SMButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMButton.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				37186FEF2C81397500B1F118 /* CloudKitManager.swift */,
+				37DF83DD2C89AB8400A44C40 /* LocationManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				37186FEC2C80F4EF00B1F118 /* SMProfile.swift in Sources */,
 				37186FEE2C80F6C600B1F118 /* MockData.swift in Sources */,
 				37FE3BB32C73E68900784FB8 /* SipMatesApp.swift in Sources */,
+				37DF83DE2C89AB8400A44C40 /* LocationManager.swift in Sources */,
 				37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */,
 				37186FF42C83723900B1F118 /* Constants.swift in Sources */,
 				37BEFBF32C74F5D600D4B717 /* LocationListView.swift in Sources */,
