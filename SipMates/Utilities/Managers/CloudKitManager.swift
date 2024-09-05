@@ -13,7 +13,7 @@ enum SipMatesError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .unableToGetLocations:
-            "Unable to retrieve locations."
+            "Locations Error"
         }
     }
         

@@ -15,12 +15,14 @@ extension LocationMapView {
         @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.331516, longitude: -121.891054),
                                                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         @Published var locations: [SMLocation] = []
+        @Published var isShowingAlert = false
         
         func getLocations() {
             Task {
                 do {
                     locations = try await CloudKitManager.shared.getLocations()
                 } catch {
+                    isShowingAlert = true
                     throw SipMatesError.unableToGetLocations
                 }
             }

@@ -17,7 +17,6 @@ struct LocationMapView: View {
         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
     
-    @State private var isShowingAlert = false
     @State private var fetchError: SipMatesError = .unableToGetLocations
     
     var body: some View {
@@ -33,10 +32,9 @@ struct LocationMapView: View {
                 viewModel.getLocations()
             } catch SipMatesError.unableToGetLocations {
                 fetchError = .unableToGetLocations
-                isShowingAlert = true
             }
         }
-        .alert(isPresented: $isShowingAlert, error: fetchError) { fetchError in
+        .alert(isPresented: $viewModel.isShowingAlert, error: fetchError) { fetchError in
             // Action - OK button to dismiss
         } message: { fetchError in
             Text(fetchError.failureReason)
