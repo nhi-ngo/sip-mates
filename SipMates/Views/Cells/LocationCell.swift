@@ -32,11 +32,12 @@ struct LocationCell: View {
                     AvatarView(size: 30)
                     AvatarView(size: 30)
                     AvatarView(size: 30)
+                    AvatarView(size: 30)
                 }
             }
             .padding(.leading, 5)
         }
-//        .frame(maxWidth: .infinity)
+        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
     }
 }
 
