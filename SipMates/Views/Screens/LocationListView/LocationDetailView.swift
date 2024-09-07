@@ -13,26 +13,15 @@ struct LocationDetailView: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            Image("default-banner-asset")
-                .resizable()
-                .scaledToFill()
-                .frame(height: 120)
+            BannerImageView(image: location.createBannerImage())
             
             HStack() {
-                Label(location.address, systemImage: "mappin.and.ellipse")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                
+                AddressView(address: location.address)
                 Spacer()
-                
             }
             .padding(.horizontal)
             
-            Text(location.description)
-                .lineLimit(3)
-                .minimumScaleFactor(0.75)
-                .frame(height: 70)
-                .padding(.horizontal)
+            DescriptionView(text: location.description)
             
             ZStack {
                 Capsule()
@@ -111,7 +100,6 @@ struct LocationActionButton: View {
 }
 
 struct FirstNameAvatarView: View {
-    
     var firstName: String
     
     var body: some View {
@@ -123,5 +111,38 @@ struct FirstNameAvatarView: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
         }
+    }
+}
+
+struct BannerImageView: View {
+    var image: UIImage
+    
+    var body: some View {
+        Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+            .frame(height: 120)
+    }
+}
+
+struct AddressView: View {
+    var address: String
+    
+    var body: some View {
+        Label(address, systemImage: "mappin.and.ellipse")
+            .font(.caption)
+            .foregroundStyle(.secondary)
+    }
+}
+
+struct DescriptionView: View {
+    var text: String
+    
+    var body: some View {
+        Text(text)
+            .lineLimit(3)
+            .minimumScaleFactor(0.75)
+            .frame(height: 70)
+            .padding(.horizontal)
     }
 }

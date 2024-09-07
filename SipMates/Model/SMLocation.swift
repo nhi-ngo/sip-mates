@@ -6,6 +6,7 @@
 //
 
 import CloudKit
+import UIKit
 
 struct SMLocation: Identifiable {
     static let kName = "name"
@@ -37,5 +38,15 @@ struct SMLocation: Identifiable {
         location    = record[SMLocation.kLocation] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
         websiteURL  = record[SMLocation.kWebsiteURL] as? String ?? "N/A"
         phoneNumber = record[SMLocation.kPhoneNumber] as? String ?? "N/A"
+    }
+    
+    func createSquareImage() -> UIImage {
+        guard let asset = squareAsset else { return PlaceholderImage.square }
+        return asset.convertToUIImage(in: .square)
+    }
+    
+    func createBannerImage() -> UIImage {
+        guard let asset = bannerAsset else { return PlaceholderImage.banner }
+        return asset.convertToUIImage(in: .banner)
     }
 }
