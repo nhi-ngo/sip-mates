@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    
+    @Binding var isShowingOnboardingView: Bool
+    
     var body: some View {
         VStack {
             HStack() {
                 Spacer()
                 Button(action: {
-                    // dismiss
+                    isShowingOnboardingView = false
                 }, label: {
                     XDismissButton()
                 })
+                .padding()
             }
             
             Spacer()
@@ -45,7 +49,7 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    OnboardingView()
+    OnboardingView(isShowingOnboardingView: .constant(true))
 }
 
 struct OnboardInfoView: View {

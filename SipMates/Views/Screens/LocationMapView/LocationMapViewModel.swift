@@ -12,12 +12,27 @@ import SwiftUI
 
 @MainActor final class LocationMapViewModel: NSObject, ObservableObject {
     
+    @Published var isShowingOnboardingView = false
     @Published var fetchError: SipMatesError?
     @Published var isShowingAlert = false
     @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.331516, longitude: -121.891054),
                                                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     
     var deviceLocationManager: CLLocationManager?
+    let kHasSeenOnboardingView = "hasSeenOnboardingView"
+    
+    var hasSeenOnboardingView: Bool {
+        return UserDefaults.standard.bool(forKey: kHasSeenOnboardingView)
+    }
+    
+    func runStartupChecks() {
+        if !hasSeenOnboardingView {
+            isShowingOnboardingView = true
+            UserDefaults.standard.set(true, forKey: kHasSeenOnboardingView)
+        } else {
+            checkIfLocationServicesIsEnabled()
+        }
+    }
     
     func checkIfLocationServicesIsEnabled() {
         if CLLocationManager.locationServicesEnabled() {

@@ -22,7 +22,8 @@ struct LocationMapView: View {
                 }
             }
             .task {
-                viewModel.checkIfLocationServicesIsEnabled()
+                viewModel.runStartupChecks()
+                
                 if locationManager.locations.isEmpty {
                     do {
                         viewModel.getLocations(for: locationManager)
@@ -30,6 +31,9 @@ struct LocationMapView: View {
                         viewModel.fetchError = .unableToGetLocations
                     }
                 }
+            }
+            .sheet(isPresented: $viewModel.isShowingOnboardingView, onDismiss: viewModel.checkIfLocationServicesIsEnabled) {
+                OnboardingView(isShowingOnboardingView: $viewModel.isShowingOnboardingView)
             }
             .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.fetchError) { fetchError in
                 switch fetchError {
