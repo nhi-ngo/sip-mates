@@ -12,10 +12,46 @@ import SwiftUI
 extension LocationMapView {
     
     @MainActor final class LocationMapViewModel: ObservableObject {
+        
+        @Published var fetchError: SipMatesError?
+        @Published var isShowingAlert = false
         @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.331516, longitude: -121.891054),
                                                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         
-        @Published var isShowingAlert = false
+        var deviceLocationManager: CLLocationManager?
+        
+        func checkIfLocationServicesIsEnabled() {
+            if CLLocationManager.locationServicesEnabled() {
+                deviceLocationManager = CLLocationManager()
+            } else {
+                isShowingAlert = true
+                fetchError = .locationDisabled
+            }
+        }
+        
+        func requestLocation() {
+            deviceLocationManager?.requestLocation()
+        }
+        
+        private func checkLocationAuthorization() {
+            guard let deviceLocationManager = deviceLocationManager else { return }
+            
+            switch deviceLocationManager.authorizationStatus {
+            case .notDetermined:
+                deviceLocationManager.requestWhenInUseAuthorization()
+            case .restricted:
+                isShowingAlert = true
+                fetchError = .locationRestricted
+            case .denied:
+                isShowingAlert = true
+                fetchError = .locationDenied
+            case .authorizedAlways, .authorizedWhenInUse, .authorized:
+                requestLocation()
+                
+            @unknown default:
+                break
+            }
+        }
         
         func getLocations(for locationManager: LocationManager) {
             Task {
@@ -23,7 +59,7 @@ extension LocationMapView {
                     locationManager.locations = try await CloudKitManager.shared.getLocations()
                 } catch {
                     isShowingAlert = true
-                    throw SipMatesError.unableToGetLocations
+                    fetchError = .unableToGetLocations
                 }
             }
         }

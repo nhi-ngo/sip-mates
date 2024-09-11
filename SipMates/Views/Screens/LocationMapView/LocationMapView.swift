@@ -11,11 +11,11 @@ import MapKit
 struct LocationMapView: View {
     @EnvironmentObject private var locationManager: LocationManager
     @StateObject  private var viewModel = LocationMapViewModel()
-    @State private var fetchError: SipMatesError = .unableToGetLocations
     
     var body: some View {
         ZStack {
             Map(initialPosition: .region(viewModel.region)) {
+                UserAnnotation().tint(Color(.red))
                 ForEach(locationManager.locations) { location in
                     Marker(location.name, coordinate: location.location.coordinate)
                         .tint(.brandPrimary)
@@ -26,12 +26,13 @@ struct LocationMapView: View {
                     do {
                         viewModel.getLocations(for: locationManager)
                     } catch SipMatesError.unableToGetLocations {
-                        fetchError = .unableToGetLocations
+                        viewModel.fetchError = .unableToGetLocations
                     }
                 }
             }
-            .alert(isPresented: $viewModel.isShowingAlert, error: fetchError) { fetchError in
+            .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.fetchError) { fetchError in
                 // Action - OK button to dismiss
+                let _ = print(fetchError)
             } message: { fetchError in
                 Text(fetchError.failureReason)
             }
