@@ -13,8 +13,6 @@ struct LocationListView: View {
     var body: some View {
         NavigationStack {
             List {
-                let _ = print(locationManager.locations)
-
                 ForEach(locationManager.locations) { location in
                     NavigationLink(destination: LocationDetailView(location: location), label: {
                        LocationCell(location: location)

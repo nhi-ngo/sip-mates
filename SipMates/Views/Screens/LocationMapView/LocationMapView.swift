@@ -22,6 +22,7 @@ struct LocationMapView: View {
                 }
             }
             .task {
+                viewModel.checkIfLocationServicesIsEnabled()
                 if locationManager.locations.isEmpty {
                     do {
                         viewModel.getLocations(for: locationManager)
@@ -31,8 +32,17 @@ struct LocationMapView: View {
                 }
             }
             .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.fetchError) { fetchError in
-                // Action - OK button to dismiss
-                let _ = print(fetchError)
+                switch fetchError {
+                case .locationDenied, .locationDisabled:
+                    Button("Settings") {
+                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                    }
+                    Button("Cancel", role: .cancel) {
+                        // OK button to dismiss
+                    }
+                case .unableToGetLocations, .locationRestricted:
+                    EmptyView()
+                }
             } message: { fetchError in
                 Text(fetchError.failureReason)
             }

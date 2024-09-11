@@ -9,59 +9,60 @@ import MapKit
 import CloudKit
 import SwiftUI
 
-extension LocationMapView {
+
+@MainActor final class LocationMapViewModel: NSObject, ObservableObject {
     
-    @MainActor final class LocationMapViewModel: ObservableObject {
+    @Published var fetchError: SipMatesError?
+    @Published var isShowingAlert = false
+    @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.331516, longitude: -121.891054),
+                                               span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+    
+    var deviceLocationManager: CLLocationManager?
+    
+    func checkIfLocationServicesIsEnabled() {
+        if CLLocationManager.locationServicesEnabled() {
+            deviceLocationManager = CLLocationManager()
+            deviceLocationManager!.delegate = self
+        } else {
+            isShowingAlert = true
+            fetchError = .locationDisabled
+        }
+    }
+    
+    private func checkLocationAuthorization() {
+        guard let deviceLocationManager = deviceLocationManager else { return }
         
-        @Published var fetchError: SipMatesError?
-        @Published var isShowingAlert = false
-        @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.331516, longitude: -121.891054),
-                                                   span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-        
-        var deviceLocationManager: CLLocationManager?
-        
-        func checkIfLocationServicesIsEnabled() {
-            if CLLocationManager.locationServicesEnabled() {
-                deviceLocationManager = CLLocationManager()
-            } else {
+        switch deviceLocationManager.authorizationStatus {
+        case .notDetermined:
+            deviceLocationManager.requestWhenInUseAuthorization()
+        case .restricted:
+            isShowingAlert = true
+            fetchError = .locationRestricted
+        case .denied:
+            isShowingAlert = true
+            fetchError = .locationDenied
+        case .authorizedAlways, .authorizedWhenInUse:
+            break
+
+        @unknown default:
+            break
+        }
+    }
+    
+    func getLocations(for locationManager: LocationManager) {
+        Task {
+            do {
+                locationManager.locations = try await CloudKitManager.shared.getLocations()
+            } catch {
                 isShowingAlert = true
-                fetchError = .locationDisabled
+                fetchError = .unableToGetLocations
             }
         }
-        
-        func requestLocation() {
-            deviceLocationManager?.requestLocation()
-        }
-        
-        private func checkLocationAuthorization() {
-            guard let deviceLocationManager = deviceLocationManager else { return }
-            
-            switch deviceLocationManager.authorizationStatus {
-            case .notDetermined:
-                deviceLocationManager.requestWhenInUseAuthorization()
-            case .restricted:
-                isShowingAlert = true
-                fetchError = .locationRestricted
-            case .denied:
-                isShowingAlert = true
-                fetchError = .locationDenied
-            case .authorizedAlways, .authorizedWhenInUse, .authorized:
-                requestLocation()
-                
-            @unknown default:
-                break
-            }
-        }
-        
-        func getLocations(for locationManager: LocationManager) {
-            Task {
-                do {
-                    locationManager.locations = try await CloudKitManager.shared.getLocations()
-                } catch {
-                    isShowingAlert = true
-                    fetchError = .unableToGetLocations
-                }
-            }
-        }
+    }
+}
+
+extension LocationMapViewModel: CLLocationManagerDelegate {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        checkLocationAuthorization()
     }
 }
