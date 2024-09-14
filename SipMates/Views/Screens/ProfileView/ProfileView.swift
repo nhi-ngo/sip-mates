@@ -11,11 +11,7 @@ import PhotosUI
 struct ProfileView: View {
     
     @State private var viewModel = ProfileViewModel()
-    
-    @State private var firstName = ""
-    @State private var lastName = ""
-    @State private var companyName = ""
-    @State private var bio = ""
+    @FocusState private var dismissKeyboard: Bool
     
     var body: some View {
         VStack {
@@ -28,13 +24,16 @@ struct ProfileView: View {
                     ProfileImageView(viewModel: viewModel)
                     
                     VStack(spacing: 1) {
-                        TextField("First Name", text: $firstName)
+                        TextField("First Name", text: $viewModel.firstName)
                             .profileNameStyle()
+                            .focused($dismissKeyboard)
                         
-                        TextField("Last Name", text: $lastName)
+                        TextField("Last Name", text: $viewModel.lastName)
                             .profileNameStyle()
+                            .focused($dismissKeyboard)
                         
-                        TextField("Company Name", text: $companyName)
+                        TextField("Company Name", text: $viewModel.companyName)
+                            .focused($dismissKeyboard)
                     }
                     
                     Spacer()
@@ -44,13 +43,14 @@ struct ProfileView: View {
             .padding(.horizontal)
             
             VStack(spacing: 8) {
-                CharactersRemainView(currentCount: bio.count)
+                CharactersRemainView(currentCount: viewModel.bio.count)
                 
-                TextEditor(text: $bio)
-                    .disabled(100 - bio.count == 0)
+                TextEditor(text: $viewModel.bio)
+                    .disabled(100 - viewModel.bio.count == 0)
                     .frame(height: 100)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.secondary, lineWidth: 1))
+                    .focused($dismissKeyboard)
                 
                 Spacer()
                 
@@ -65,6 +65,14 @@ struct ProfileView: View {
             Spacer()
         }
         .navigationTitle("Profile")
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") {
+                    dismissKeyboard.toggle()
+                }
+            }
+        }
     }
 }
 

@@ -28,11 +28,11 @@ struct LocationCell: View {
                     .minimumScaleFactor(0.75)
                 
                 HStack {
-                    AvatarView(size: 30)
-                    AvatarView(size: 30)
-                    AvatarView(size: 30)
-                    AvatarView(size: 30)
-                    AvatarView(size: 30)
+                    AvatarView(size: 30, image: PlaceholderImage.avatar)
+                    AvatarView(size: 30, image: PlaceholderImage.avatar)
+                    AvatarView(size: 30, image: PlaceholderImage.avatar)
+                    AvatarView(size: 30, image: PlaceholderImage.avatar)
+                    AvatarView(size: 30, image: PlaceholderImage.avatar)
                 }
             }
             .padding(.leading, 5)
