@@ -11,6 +11,9 @@ import PhotosUI
 struct ProfileView: View {
     
     @State private var viewModel = ProfileViewModel()
+    @State private var formError: FormError = .invalidProfile
+    @State private var isShowingAlert = false
+
     @FocusState private var dismissKeyboard: Bool
     
     var body: some View {
@@ -55,7 +58,7 @@ struct ProfileView: View {
                 Spacer()
                 
                 Button(action: {
-                    
+                    createProfile()
                 }, label: {
                     SMButton(title: "Create Profile")
                 })
@@ -73,6 +76,33 @@ struct ProfileView: View {
                 }
             }
         }
+        .alert(isPresented: $isShowingAlert, error: formError) { formError in
+            // Action - OK button to dismiss
+        } message: { fetchError in
+            Text(fetchError.failureReason)
+        }
+        
+    }
+    
+    func isProfileValid() -> Bool {
+        guard !viewModel.firstName.isEmpty,
+              !viewModel.lastName.isEmpty,
+              !viewModel.companyName.isEmpty,
+              !viewModel.bio.isEmpty,
+              viewModel.avatar != PlaceholderImage.avatar,
+              viewModel.bio.count <= 100 else { return false }
+        
+        return true
+    }
+    
+    func createProfile() {
+        guard isProfileValid() else {
+            isShowingAlert = true
+            formError = .invalidProfile
+            return
+        }
+        
+        // create user profile and send it up to cloudkit
     }
 }
 
