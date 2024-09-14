@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct ProfileView: View {
+    
+    @State private var viewModel = ProfileViewModel()
     
     @State private var firstName = ""
     @State private var lastName = ""
@@ -22,10 +25,7 @@ struct ProfileView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 
                 HStack(spacing: 15) {
-                    ZStack {
-                        AvatarView(size: 84)
-                        EditImage()
-                    }
+                    ProfileImageView(viewModel: viewModel)
                     
                     VStack(spacing: 1) {
                         TextField("First Name", text: $firstName)
@@ -74,6 +74,32 @@ struct ProfileView: View {
     }
 }
 
+struct ProfileImageView: View {
+    var viewModel: ProfileViewModel
+    @State private var selectedImage: PhotosPickerItem?
+    
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            AvatarView(size: 84, image: viewModel.avatar)
+            
+            PhotosPicker(selection: $selectedImage, matching: .images) {
+                EditImage()
+            }
+        }
+        .padding(.leading, 12)
+        .onChange(of: selectedImage) { _, _ in
+            Task {
+                if let pickerItem = selectedImage,
+                   let data = try? await pickerItem.loadTransferable(type: Data.self) {
+                    if let image = UIImage(data: data) {
+                        viewModel.avatar = image
+                    }
+                }
+            }
+        }
+    }
+}
+
 struct ProfileNameStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -96,7 +122,7 @@ struct EditImage: View {
             .scaledToFit()
             .frame(width: 14, height: 14)
             .foregroundStyle(.white)
-            .offset(y: 30)
+            .padding(.bottom, 5)
     }
 }
 

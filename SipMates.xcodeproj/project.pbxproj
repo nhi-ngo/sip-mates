@@ -17,6 +17,7 @@
 		376C57A12C91C28700669504 /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C57A02C91C28700669504 /* LogoView.swift */; };
 		376C57A42C91C85D00669504 /* XDismissButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C57A32C91C85C00669504 /* XDismissButton.swift */; };
 		3778D9182C8C5164005F18B1 /* CKAsset+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3778D9172C8C5164005F18B1 /* CKAsset+Ext.swift */; };
+		3791FF942C9274D700B63DA4 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3791FF932C9274D700B63DA4 /* ProfileViewModel.swift */; };
 		379CD3BD2C752F7E00377157 /* LocationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379CD3BC2C752F7E00377157 /* LocationDetailView.swift */; };
 		37BEFBEF2C74F57300D4B717 /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBEE2C74F57300D4B717 /* AppTabView.swift */; };
 		37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */; };
@@ -42,6 +43,7 @@
 		376C57A02C91C28700669504 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		376C57A32C91C85C00669504 /* XDismissButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XDismissButton.swift; sourceTree = "<group>"; };
 		3778D9172C8C5164005F18B1 /* CKAsset+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CKAsset+Ext.swift"; sourceTree = "<group>"; };
+		3791FF932C9274D700B63DA4 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		379CD3BC2C752F7E00377157 /* LocationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailView.swift; sourceTree = "<group>"; };
 		37BEFBEB2C74F21C00D4B717 /* SipMates.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SipMates.entitlements; sourceTree = "<group>"; };
 		37BEFBEE2C74F57300D4B717 /* AppTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabView.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				37BEFBF42C74F5E400D4B717 /* ProfileView.swift */,
+				3791FF932C9274D700B63DA4 /* ProfileViewModel.swift */,
 			);
 			path = ProfileView;
 			sourceTree = "<group>";
@@ -306,6 +309,7 @@
 				3778D9182C8C5164005F18B1 /* CKAsset+Ext.swift in Sources */,
 				37E00CEE2C7E814400AE88EE /* SMButton.swift in Sources */,
 				37186FEA2C80C9AA00B1F118 /* SMLocation.swift in Sources */,
+				3791FF942C9274D700B63DA4 /* ProfileViewModel.swift in Sources */,
 				37BEFBF52C74F5E400D4B717 /* ProfileView.swift in Sources */,
 				37186FF02C81397500B1F118 /* CloudKitManager.swift in Sources */,
 				376C57A42C91C85D00669504 /* XDismissButton.swift in Sources */,
