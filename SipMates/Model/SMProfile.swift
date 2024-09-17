@@ -6,6 +6,7 @@
 //
 
 import CloudKit
+import UIKit
 
 struct SMProfile {
     static let kFirstName    = "firstName"
@@ -30,5 +31,10 @@ struct SMProfile {
         avatar       = record[SMProfile.kAvatar] as? CKAsset
         companyName  = record[SMProfile.kCompanyName] as? String ?? "N/A"
         bio          = record[SMProfile.kBio] as? String ?? "N/A"
+    }
+    
+    func createAvatarImage() -> UIImage {
+        guard let avatar = avatar else { return PlaceholderImage.avatar }
+        return avatar.convertToUIImage(in: .square)
     }
 }

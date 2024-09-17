@@ -77,6 +77,7 @@ struct ProfileView: View {
                 }
             }
         }
+        .onAppear { getProfile() }
         .alert(isPresented: $isShowingAlert, error: formError) { formError in
             // Action - OK button to dismiss
         } message: { fetchError in
@@ -141,6 +142,43 @@ struct ProfileView: View {
                 }
                 
                 CKContainer.default().publicCloudDatabase.add(operation)
+            }
+        }
+    }
+    
+    func getProfile() {
+        CKContainer.default().fetchUserRecordID { recordID, error in
+            guard let recordID = recordID, error == nil else {
+                print(error!.localizedDescription)
+                return
+            }
+            
+            CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) { userRecord, error in
+                guard let userRecord = userRecord, error == nil else {
+                    print("Failed to get user's record")
+                    print(error!.localizedDescription)
+                    return
+                }
+
+                let profileReference = userRecord["userProfile"] as! CKRecord.Reference
+                let profileRecordID = profileReference.recordID
+                
+                CKContainer.default().publicCloudDatabase.fetch(withRecordID: profileRecordID) { profileRecord, error in
+                    guard let profileRecord = profileRecord, error == nil else {
+                        print(error!.localizedDescription)
+                        return
+                    }
+                    
+                    // Go to main thread to update the UI
+                    DispatchQueue.main.async {
+                        let profile = SMProfile(record: profileRecord)
+                        viewModel.firstName = profile.firstName
+                        viewModel.lastName = profile.lastName
+                        viewModel.companyName = profile.companyName
+                        viewModel.bio = profile.bio
+                        viewModel.avatar = profile.createAvatarImage()
+                    }
+                }
             }
         }
     }
