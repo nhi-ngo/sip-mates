@@ -11,10 +11,7 @@ import CloudKit
 
 struct ProfileView: View {
     
-    @State private var viewModel = ProfileViewModel()
-    @State private var formError: FormError = .invalidProfile
-    @State private var isShowingAlert = false
-    
+    @StateObject private var viewModel = ProfileViewModel()
     @FocusState private var dismissKeyboard: Bool
     
     var body: some View {
@@ -59,7 +56,7 @@ struct ProfileView: View {
                 Spacer()
                 
                 Button(action: {
-                    createProfile()
+                    viewModel.createProfile()
                 }, label: {
                     SMButton(title: "Create Profile")
                 })
@@ -77,109 +74,11 @@ struct ProfileView: View {
                 }
             }
         }
-        .onAppear { getProfile() }
-        .alert(isPresented: $isShowingAlert, error: formError) { formError in
+        .task { try? await viewModel.getProfile() }
+        .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.formError) { formError in
             // Action - OK button to dismiss
         } message: { fetchError in
             Text(fetchError.failureReason)
-        }
-        
-    }
-    
-    func isProfileValid() -> Bool {
-        guard !viewModel.firstName.isEmpty,
-              !viewModel.lastName.isEmpty,
-              !viewModel.companyName.isEmpty,
-              !viewModel.bio.isEmpty,
-              viewModel.avatar != PlaceholderImage.avatar,
-              viewModel.bio.count <= 100 else { return false }
-        
-        return true
-    }
-    
-    func createProfile() {
-        guard isProfileValid() else {
-            isShowingAlert = true
-            formError = .invalidProfile
-            return
-        }
-        
-        // create CKRecord from profile view
-        let profileRecord = CKRecord(recordType: RecordType.profile)
-        profileRecord[SMProfile.kFirstName] = viewModel.firstName
-        profileRecord[SMProfile.kLastName] = viewModel.lastName
-        profileRecord[SMProfile.kCompanyName] = viewModel.companyName
-        profileRecord[SMProfile.kBio] = viewModel.bio
-        profileRecord[SMProfile.kAvatar] = viewModel.avatar.convertToCKAsset()
-        
-        // get our UserRecordID from the Container
-        CKContainer.default().fetchUserRecordID { recordID, error in
-            guard let recordID = recordID, error == nil else {
-                print(error!.localizedDescription)
-                return
-            }
-            
-            // get UserRecord from the Public Database
-            CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) { userRecord, error in
-                guard let userRecord = userRecord, error == nil else {
-                    print(error!.localizedDescription)
-                    return
-                }
-                
-                // create reference on UserRecord to the SMProfile we create
-                userRecord["userProfile"] = CKRecord.Reference(recordID: profileRecord.recordID, action: .deleteSelf)
-                
-                // create a CKOperation to save our User and Profile Records
-                let operation = CKModifyRecordsOperation(recordsToSave: [userRecord, profileRecord])
-                
-                operation.modifyRecordsResultBlock = { result in
-                    switch result {
-                    case .success:
-                        print("Successfully created and uploaded profile to CloudKit")
-                    case .failure:
-                        print("Error creating profile: ", error!.localizedDescription)
-                    }
-                }
-                
-                CKContainer.default().publicCloudDatabase.add(operation)
-            }
-        }
-    }
-    
-    func getProfile() {
-        CKContainer.default().fetchUserRecordID { recordID, error in
-            guard let recordID = recordID, error == nil else {
-                print(error!.localizedDescription)
-                return
-            }
-            
-            CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) { userRecord, error in
-                guard let userRecord = userRecord, error == nil else {
-                    print("Failed to get user's record")
-                    print(error!.localizedDescription)
-                    return
-                }
-
-                let profileReference = userRecord["userProfile"] as! CKRecord.Reference
-                let profileRecordID = profileReference.recordID
-                
-                CKContainer.default().publicCloudDatabase.fetch(withRecordID: profileRecordID) { profileRecord, error in
-                    guard let profileRecord = profileRecord, error == nil else {
-                        print(error!.localizedDescription)
-                        return
-                    }
-                    
-                    // Go to main thread to update the UI
-                    DispatchQueue.main.async {
-                        let profile = SMProfile(record: profileRecord)
-                        viewModel.firstName = profile.firstName
-                        viewModel.lastName = profile.lastName
-                        viewModel.companyName = profile.companyName
-                        viewModel.bio = profile.bio
-                        viewModel.avatar = profile.createAvatarImage()
-                    }
-                }
-            }
         }
     }
 }

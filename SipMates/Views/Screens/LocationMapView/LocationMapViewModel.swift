@@ -9,7 +9,6 @@ import MapKit
 import CloudKit
 import SwiftUI
 
-
 @MainActor final class LocationMapViewModel: NSObject, ObservableObject {
     
     @Published var isShowingOnboardingView = false

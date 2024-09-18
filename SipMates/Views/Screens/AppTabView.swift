@@ -27,7 +27,9 @@ struct AppTabView: View {
                 Label("Profile", systemImage: "person.crop.circle")
             }
             .navigationTitle("Profile")
-            
+        }
+        .task {
+            try? await CloudKitManager.shared.getUserRecord()
         }
         .tabViewDefaultBackground()
     }

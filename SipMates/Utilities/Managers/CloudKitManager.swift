@@ -40,10 +40,24 @@ enum SipMatesError: LocalizedError {
     }
 }
 
-struct CloudKitManager {
+final class CloudKitManager {
     static let shared = CloudKitManager()
     
+    private init() {}
+    
     let container = CKContainer.default()
+    var userRecord: CKRecord?
+    var profileRecordID: CKRecord.ID?
+    
+    func getUserRecord() async throws {
+        let recordID = try await container.userRecordID()
+        let record = try await container.publicCloudDatabase.record(for: recordID)
+        userRecord = record
+        
+        if let profileReference = record["userProfile"] as? CKRecord.Reference {
+            profileRecordID = profileReference.recordID
+        }
+    }
     
     func getLocations() async throws -> [SMLocation] {
         let sortDescriptor = NSSortDescriptor(key: SMLocation.kName, ascending: true)
@@ -53,5 +67,35 @@ struct CloudKitManager {
         let (matchResults, _ ) = try await container.publicCloudDatabase.records(matching: query)
         let records = matchResults.compactMap { _, result in try? result.get() }
         return records.map(SMLocation.init)
+    }
+    
+    func batchSave(records: [CKRecord]) {
+        // create a CKOperation to save our User and Profile Records
+        let operation = CKModifyRecordsOperation(recordsToSave: records)
+        
+        operation.modifyRecordsResultBlock = { result in
+            switch result {
+            case .success:
+                // TODO: show alert
+                print("Successfully created and uploaded profile to CloudKit")
+            case .failure:
+                // TODO: show alert
+                print("Error creating profile")
+            }
+        }
+        
+        CKContainer.default().publicCloudDatabase.add(operation)
+    }
+    
+    func fetchRecord(with id: CKRecord.ID, completed: @escaping (Result<CKRecord, Error>) -> Void) {
+        container.publicCloudDatabase.fetch(withRecordID: id) { record, error in
+            guard let record, error == nil else {
+                completed(.failure(error!))
+                print("Unable to fetch user record")
+                return
+            }
+            
+            completed(.success(record))
+        }
     }
 }
