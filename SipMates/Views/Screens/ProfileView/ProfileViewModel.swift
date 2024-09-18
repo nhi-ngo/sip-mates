@@ -8,13 +8,25 @@
 import Foundation
 import CloudKit
 
-enum FormError: LocalizedError {
+enum ProfileError: LocalizedError {
     case invalidProfile
+    case noUserRecord
+    case createProfileSuccess
+    case createProfileFailure
+    case unableToRetrieveProfile
     
     var errorDescription: String? {
         switch self {
         case .invalidProfile:
             "Invalid Profile"
+        case .noUserRecord:
+            "No User Record"
+        case .createProfileSuccess:
+            "Profile created successfully!"
+        case .createProfileFailure:
+            "Failed to create profile"
+        case .unableToRetrieveProfile:
+            "Failed to retrieve profile"
         }
     }
     
@@ -22,6 +34,14 @@ enum FormError: LocalizedError {
         switch self {
         case .invalidProfile:
             "All fields are required as well as a profile photo. Your bio must be < 100 characters. \nPlease try again."
+        case .noUserRecord:
+            "You must log into iCloud on your phone in order to utilize SipMates' Profile."
+        case .createProfileSuccess:
+            "Your profile has successfully been created."
+        case .createProfileFailure:
+            "Unable to create profile at this time. \nPlease try again later."
+        case .unableToRetrieveProfile:
+            "Unable to retrieve profile at this time. \nPlease try again later."
         }
     }
 }
@@ -35,7 +55,7 @@ enum FormError: LocalizedError {
     @Published var isLoading             = false
     
     @Published var isShowingAlert = false
-    @Published var formError: FormError = .invalidProfile
+    @Published var profileError: ProfileError = .invalidProfile
     
     func isProfileValid() -> Bool {
         guard !firstName.isEmpty,
@@ -51,7 +71,7 @@ enum FormError: LocalizedError {
     func createProfile() {
         guard isProfileValid() else {
             isShowingAlert = true
-            formError = .invalidProfile
+            profileError = .invalidProfile
             return
         }
         
@@ -59,7 +79,8 @@ enum FormError: LocalizedError {
         let profileRecord = createProfileRecord()
         
         guard let userRecord = CloudKitManager.shared.userRecord else {
-            // TODO: show alert
+            isShowingAlert = true
+            profileError = .noUserRecord
             return
         }
         
@@ -71,23 +92,23 @@ enum FormError: LocalizedError {
     
     func getProfile() async throws {
         guard let userRecord = CloudKitManager.shared.userRecord else {
-            //TODO: show alert
-            print("Unable to get user record")
+            isShowingAlert = true
+            profileError = .noUserRecord
             return
         }
         
         guard let profileReference = userRecord["userProfile"] as? CKRecord.Reference else {
-            //TODO: show alert
             print("Unable to get profile reference")
             return
         }
-        
 
         let profileRecordID = profileReference.recordID
-        let _ = print(userRecord)
         
+        showLoadingView()
         CloudKitManager.shared.fetchRecord(with: profileRecordID) { result in
             DispatchQueue.main.async { [self] in
+                hideLoadingView()
+                
                 switch result {
                 case .success(let record):
                     let profile  = SMProfile(record: record)
@@ -98,7 +119,8 @@ enum FormError: LocalizedError {
                     avatar      = profile.createAvatarImage()
                     
                 case .failure(_):
-                    //TODO: show alert
+                    isShowingAlert = true
+                    profileError = .unableToRetrieveProfile
                     print("Failed fetching user record")
                     break
                 }
@@ -114,7 +136,9 @@ enum FormError: LocalizedError {
         profileRecord[SMProfile.kBio] = bio
         profileRecord[SMProfile.kAvatar] = avatar.convertToCKAsset()
         
-        let _ = print("profileRecord: ", profileRecord)
         return profileRecord
     }
+    
+    private func showLoadingView() { isLoading = true }
+    private func hideLoadingView() { isLoading = false }
 }

@@ -20,6 +20,7 @@
 		3791FF942C9274D700B63DA4 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3791FF932C9274D700B63DA4 /* ProfileViewModel.swift */; };
 		3791FF982C95CB7D00B63DA4 /* UIImage+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3791FF972C95CB7D00B63DA4 /* UIImage+Ext.swift */; };
 		379CD3BD2C752F7E00377157 /* LocationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379CD3BC2C752F7E00377157 /* LocationDetailView.swift */; };
+		37B8D0462C9AB1440089ECC3 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B8D0452C9AB1440089ECC3 /* LoadingView.swift */; };
 		37BEFBEF2C74F57300D4B717 /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBEE2C74F57300D4B717 /* AppTabView.swift */; };
 		37BEFBF12C74F5B800D4B717 /* LocationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */; };
 		37BEFBF32C74F5D600D4B717 /* LocationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BEFBF22C74F5D600D4B717 /* LocationListView.swift */; };
@@ -47,6 +48,7 @@
 		3791FF932C9274D700B63DA4 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		3791FF972C95CB7D00B63DA4 /* UIImage+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Ext.swift"; sourceTree = "<group>"; };
 		379CD3BC2C752F7E00377157 /* LocationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailView.swift; sourceTree = "<group>"; };
+		37B8D0452C9AB1440089ECC3 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		37BEFBEB2C74F21C00D4B717 /* SipMates.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SipMates.entitlements; sourceTree = "<group>"; };
 		37BEFBEE2C74F57300D4B717 /* AppTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabView.swift; sourceTree = "<group>"; };
 		37BEFBF02C74F5B800D4B717 /* LocationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapView.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				376C57A22C91C84200669504 /* Buttons */,
 				37E00CEB2C7E7BAD00AE88EE /* AvatarView.swift */,
 				376C57A02C91C28700669504 /* LogoView.swift */,
+				37B8D0452C9AB1440089ECC3 /* LoadingView.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -317,6 +320,7 @@
 				37186FF02C81397500B1F118 /* CloudKitManager.swift in Sources */,
 				376C57A42C91C85D00669504 /* XDismissButton.swift in Sources */,
 				3791FF982C95CB7D00B63DA4 /* UIImage+Ext.swift in Sources */,
+				37B8D0462C9AB1440089ECC3 /* LoadingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

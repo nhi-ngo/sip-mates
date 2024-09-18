@@ -15,55 +15,59 @@ struct ProfileView: View {
     @FocusState private var dismissKeyboard: Bool
     
     var body: some View {
-        VStack {
-            ZStack {
-                Color(.secondarySystemBackground)
-                    .frame(height: 130)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                
-                HStack(spacing: 15) {
-                    ProfileImageView(viewModel: viewModel)
+        ZStack {
+            VStack {
+                ZStack {
+                    Color(.secondarySystemBackground)
+                        .frame(height: 130)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     
-                    VStack(spacing: 1) {
-                        TextField("First Name", text: $viewModel.firstName)
-                            .profileNameStyle()
-                            .focused($dismissKeyboard)
+                    HStack(spacing: 15) {
+                        ProfileImageView(viewModel: viewModel)
                         
-                        TextField("Last Name", text: $viewModel.lastName)
-                            .profileNameStyle()
-                            .focused($dismissKeyboard)
+                        VStack(spacing: 1) {
+                            TextField("First Name", text: $viewModel.firstName)
+                                .profileNameStyle()
+                                .focused($dismissKeyboard)
+                            
+                            TextField("Last Name", text: $viewModel.lastName)
+                                .profileNameStyle()
+                                .focused($dismissKeyboard)
+                            
+                            TextField("Company Name", text: $viewModel.companyName)
+                                .focused($dismissKeyboard)
+                        }
                         
-                        TextField("Company Name", text: $viewModel.companyName)
-                            .focused($dismissKeyboard)
+                        Spacer()
                     }
+                    .padding()
+                }
+                .padding(.horizontal)
+                
+                VStack(spacing: 8) {
+                    CharactersRemainView(currentCount: viewModel.bio.count)
+                    
+                    TextEditor(text: $viewModel.bio)
+                        .disabled(100 - viewModel.bio.count == 0)
+                        .frame(height: 100)
+                        .padding()
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.secondary, lineWidth: 1))
+                        .focused($dismissKeyboard)
                     
                     Spacer()
+                    
+                    Button(action: {
+                        viewModel.createProfile()
+                    }, label: {
+                        SMButton(title: "Create Profile")
+                    })
                 }
                 .padding()
-            }
-            .padding(.horizontal)
-            
-            VStack(spacing: 8) {
-                CharactersRemainView(currentCount: viewModel.bio.count)
-                
-                TextEditor(text: $viewModel.bio)
-                    .disabled(100 - viewModel.bio.count == 0)
-                    .frame(height: 100)
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.secondary, lineWidth: 1))
-                    .focused($dismissKeyboard)
                 
                 Spacer()
-                
-                Button(action: {
-                    viewModel.createProfile()
-                }, label: {
-                    SMButton(title: "Create Profile")
-                })
             }
-            .padding()
             
-            Spacer()
+            if viewModel.isLoading { LoadingView() }
         }
         .navigationTitle("Profile")
         .toolbar {
@@ -75,7 +79,7 @@ struct ProfileView: View {
             }
         }
         .task { try? await viewModel.getProfile() }
-        .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.formError) { formError in
+        .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.profileError) { profileError in
             // Action - OK button to dismiss
         } message: { fetchError in
             Text(fetchError.failureReason)
