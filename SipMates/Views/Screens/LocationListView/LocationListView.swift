@@ -14,7 +14,7 @@ struct LocationListView: View {
         NavigationStack {
             List {
                 ForEach(locationManager.locations) { location in
-                    NavigationLink(destination: LocationDetailView(location: location), label: {
+                    NavigationLink(destination: LocationDetailView(viewModel: LocationDetailViewModel(location: location)), label: {
                        LocationCell(location: location)
                    })
                 }

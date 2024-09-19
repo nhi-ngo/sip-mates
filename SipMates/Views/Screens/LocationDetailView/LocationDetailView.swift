@@ -9,19 +9,19 @@ import SwiftUI
 
 struct LocationDetailView: View {
     
-    var location: SMLocation
+    @ObservedObject var viewModel: LocationDetailViewModel
     
     var body: some View {
         VStack(spacing: 16) {
-            BannerImageView(image: location.createBannerImage())
+            BannerImageView(image: viewModel.location.createBannerImage())
             
             HStack() {
-                AddressView(address: location.address)
+                AddressView(address: viewModel.location.address)
                 Spacer()
             }
             .padding(.horizontal)
             
-            DescriptionView(text: location.description)
+            DescriptionView(text: viewModel.location.description)
             
             ZStack {
                 Capsule()
@@ -30,17 +30,17 @@ struct LocationDetailView: View {
                 
                 HStack(spacing: 20) {
                     Button(action: {
-                        //TODO
+                        viewModel.getDirectionsToLocation()
                     }, label: {
                         LocationActionButton(imageName: "location.fill")
                     })
                     
-                    Link(destination: URL(string: location.websiteURL)!, label: {
+                    Link(destination: URL(string: viewModel.location.websiteURL)!, label: {
                         LocationActionButton(imageName: "network")
                     })
                     
                     Button(action: {
-                        //TODO
+                        viewModel.callLocation()
                     }, label: {
                         LocationActionButton(imageName: "phone.fill")
                     })
@@ -69,14 +69,14 @@ struct LocationDetailView: View {
             
             Spacer()
         }
-        .navigationTitle(location.name)
+        .navigationTitle(viewModel.location.name)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
     NavigationStack {
-        LocationDetailView(location: SMLocation(record: MockData.location))
+        LocationDetailView(viewModel: LocationDetailViewModel(location: SMLocation(record: MockData.location)))
     }
 }
 
