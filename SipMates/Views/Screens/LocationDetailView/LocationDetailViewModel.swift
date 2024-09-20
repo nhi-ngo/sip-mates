@@ -10,8 +10,10 @@ import MapKit
 
 final class LocationDetailViewModel: ObservableObject {
     
-    var location: SMLocation
+    @Published var isShowingProfileModal = false
     
+    var location: SMLocation
+        
     init(location: SMLocation) {
         self.location = location
     }

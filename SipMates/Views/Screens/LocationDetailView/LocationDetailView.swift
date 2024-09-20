@@ -12,65 +12,78 @@ struct LocationDetailView: View {
     @ObservedObject var viewModel: LocationDetailViewModel
     
     var body: some View {
-        VStack(spacing: 16) {
-            BannerImageView(image: viewModel.location.createBannerImage())
-            
-            HStack() {
-                AddressView(address: viewModel.location.address)
-                Spacer()
-            }
-            .padding(.horizontal)
-            
-            DescriptionView(text: viewModel.location.description)
-            
-            ZStack {
-                Capsule()
-                    .frame(height: 80)
-                    .foregroundStyle(Color(.secondarySystemBackground))
+        ZStack {
+            VStack(spacing: 16) {
+                BannerImageView(image: viewModel.location.createBannerImage())
                 
-                HStack(spacing: 20) {
-                    Button(action: {
-                        viewModel.getDirectionsToLocation()
-                    }, label: {
-                        LocationActionButton(imageName: "location.fill")
-                    })
+                HStack() {
+                    AddressView(address: viewModel.location.address)
+                    Spacer()
+                }
+                .padding(.horizontal)
+                
+                DescriptionView(text: viewModel.location.description)
+                
+                ZStack {
+                    Capsule()
+                        .frame(height: 80)
+                        .foregroundStyle(Color(.secondarySystemBackground))
                     
-                    Link(destination: URL(string: viewModel.location.websiteURL)!, label: {
-                        LocationActionButton(imageName: "network")
-                    })
-                    
-                    Button(action: {
-                        viewModel.callLocation()
-                    }, label: {
-                        LocationActionButton(imageName: "phone.fill")
-                    })
-                    
-                    Button(action: {
-                        //TODO
-                    }, label: {
-                        LocationActionButton(imageName: "person.fill.checkmark")
+                    HStack(spacing: 20) {
+                        Button(action: {
+                            viewModel.getDirectionsToLocation()
+                        }, label: {
+                            LocationActionButton(imageName: "location.fill")
+                        })
+                        
+                        Link(destination: URL(string: viewModel.location.websiteURL)!, label: {
+                            LocationActionButton(imageName: "network")
+                        })
+                        
+                        Button(action: {
+                            viewModel.callLocation()
+                        }, label: {
+                            LocationActionButton(imageName: "phone.fill")
+                        })
+                        
+                        Button(action: {
+                            //TODO
+                        }, label: {
+                            LocationActionButton(imageName: "person.fill.checkmark")
+                        })
+                    }
+                }
+                .padding(.horizontal)
+                
+                Text("Who's Here?").bold().font(.title2)
+                
+                ScrollView {
+                    LazyVGrid(columns: [GridItem](repeating: GridItem(.flexible()), count: 3), content: {
+                        FirstNameAvatarView(firstName: "Nhi")
+                            .onTapGesture {
+                                withAnimation {
+                                    viewModel.isShowingProfileModal = true
+                                }
+                            }
+                            
                     })
                 }
-            }
-            .padding(.horizontal)
-            
-            Text("Who's Here?").bold().font(.title2)
-            
-            ScrollView {
-                LazyVGrid(columns: [GridItem](repeating: GridItem(.flexible()), count: 3), content: {
-                    FirstNameAvatarView(firstName: "Nhi")
-                    FirstNameAvatarView(firstName: "Swift")
-                    FirstNameAvatarView(firstName: "NiceniceniceNicenicenice")
-                    FirstNameAvatarView(firstName: "Swift")
-                    FirstNameAvatarView(firstName: "Swift")
-                    FirstNameAvatarView(firstName: "Swift")
-                })
+                
+                Spacer()
             }
             
-            Spacer()
+            if viewModel.isShowingProfileModal {
+                Color(.black)
+                    .ignoresSafeArea()
+                    .opacity(0.9)
+                
+                ProfileModalView(profile: SMProfile(record: MockData.profile),
+                                 isShowingProfileModal: $viewModel.isShowingProfileModal)
+            }
         }
         .navigationTitle(viewModel.location.name)
         .navigationBarTitleDisplayMode(.inline)
+        
     }
 }
 
