@@ -9,5 +9,5 @@ import Foundation
 
 final class LocationManager: ObservableObject {
     @Published var locations: [SMLocation] = []
-    
+    var selectedLocation: SMLocation?
 }

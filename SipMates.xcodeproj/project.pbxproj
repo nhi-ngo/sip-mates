@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		370C06232CA796E20021A91E /* AppTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370C06222CA796E20021A91E /* AppTabViewModel.swift */; };
 		37186FEA2C80C9AA00B1F118 /* SMLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FE92C80C9AA00B1F118 /* SMLocation.swift */; };
 		37186FEC2C80F4EF00B1F118 /* SMProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FEB2C80F4EF00B1F118 /* SMProfile.swift */; };
 		37186FEE2C80F6C600B1F118 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FED2C80F6C600B1F118 /* MockData.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		370C06222CA796E20021A91E /* AppTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabViewModel.swift; sourceTree = "<group>"; };
 		37186FE92C80C9AA00B1F118 /* SMLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMLocation.swift; sourceTree = "<group>"; };
 		37186FEB2C80F4EF00B1F118 /* SMProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMProfile.swift; sourceTree = "<group>"; };
 		37186FED2C80F6C600B1F118 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
@@ -83,6 +85,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		370C06212CA796C00021A91E /* AppTabView */ = {
+			isa = PBXGroup;
+			children = (
+				37BEFBEE2C74F57300D4B717 /* AppTabView.swift */,
+				370C06222CA796E20021A91E /* AppTabViewModel.swift */,
+			);
+			path = AppTabView;
+			sourceTree = "<group>";
+		};
 		37186FE82C80C98200B1F118 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -188,7 +199,7 @@
 		37E00CF02C7E822400AE88EE /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				37BEFBEE2C74F57300D4B717 /* AppTabView.swift */,
+				370C06212CA796C00021A91E /* AppTabView */,
 				376C579E2C91C24400669504 /* OnboardingView.swift */,
 				37186FFA2C837DC700B1F118 /* LocationMapView */,
 				37186FFB2C837DEE00B1F118 /* LocationListView */,
@@ -330,6 +341,7 @@
 				37186FF22C81411D00B1F118 /* LocationMapViewModel.swift in Sources */,
 				37186FEC2C80F4EF00B1F118 /* SMProfile.swift in Sources */,
 				37186FEE2C80F6C600B1F118 /* MockData.swift in Sources */,
+				370C06232CA796E20021A91E /* AppTabViewModel.swift in Sources */,
 				376C579F2C91C24400669504 /* OnboardingView.swift in Sources */,
 				37B8D04F2CA01C5D0089ECC3 /* MapBalloon.swift in Sources */,
 				37FE3BB32C73E68900784FB8 /* SipMatesApp.swift in Sources */,

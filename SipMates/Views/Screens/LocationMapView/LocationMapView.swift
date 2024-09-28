@@ -10,20 +10,23 @@ import MapKit
 
 struct LocationMapView: View {
     @EnvironmentObject private var locationManager: LocationManager
-    @StateObject  private var viewModel = LocationMapViewModel()
+    @StateObject private var viewModel = LocationMapViewModel()
     
     var body: some View {
         ZStack {
             Map(initialPosition: .region(viewModel.region)) {
                 UserAnnotation().tint(Color(.red))
                 ForEach(locationManager.locations) { location in
-                    Marker(location.name, coordinate: location.location.coordinate)
-                        .tint(.brandPrimary)
+                    Annotation("custom", coordinate: location.location.coordinate, anchor: UnitPoint(x: 0.5, y: 0.75)) {
+                        SMAnnotation(location: location)
+                            .onTapGesture {
+                                locationManager.selectedLocation = location
+                                viewModel.isShowingDetailView = true
+                            }
+                    }
                 }
             }
             .task {
-                viewModel.runStartupChecks()
-                
                 if locationManager.locations.isEmpty {
                     do {
                         viewModel.getLocations(for: locationManager)
@@ -32,8 +35,16 @@ struct LocationMapView: View {
                     }
                 }
             }
-            .sheet(isPresented: $viewModel.isShowingOnboardingView, onDismiss: viewModel.checkIfLocationServicesIsEnabled) {
-                OnboardingView(isShowingOnboardingView: $viewModel.isShowingOnboardingView)
+            .sheet(isPresented: $viewModel.isShowingDetailView) {
+                NavigationView {
+                    LocationDetailView(viewModel: LocationDetailViewModel(location: locationManager.selectedLocation!))
+                        .toolbar {
+                            Button("Dismiss") {
+                                viewModel.isShowingDetailView = false
+                            }
+                        }
+                }
+                .tint(.brandPrimary)
             }
             .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.fetchError) { fetchError in
                 switch fetchError {
