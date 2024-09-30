@@ -6,64 +6,65 @@
 //
 
 import SwiftUI
-import MapKit
-import CloudKit
+//import MapKit
+//import CloudKit
+import CoreLocation
 
-final class AppTabViewModel: NSObject, ObservableObject {
+extension AppTabView {
     
-    @Published var isShowingOnboardingView = false
-    @Published var fetchError: SipMatesError?
-    @Published var isShowingAlert = false
-    
-    var deviceLocationManager: CLLocationManager?
-    let kHasSeenOnboardingView = "hasSeenOnboardingView"
-    
-    var hasSeenOnboardingView: Bool {
-        return UserDefaults.standard.bool(forKey: kHasSeenOnboardingView)
-    }
-    
-    func runStartupChecks() {
-        if !hasSeenOnboardingView {
-            isShowingOnboardingView = true
-            UserDefaults.standard.set(true, forKey: kHasSeenOnboardingView)
-        } else {
-            checkIfLocationServicesIsEnabled()
-        }
-    }
-    
-    func checkIfLocationServicesIsEnabled() {
-        if CLLocationManager.locationServicesEnabled() {
-            deviceLocationManager = CLLocationManager()
-            deviceLocationManager!.delegate = self
-        } else {
-            isShowingAlert = true
-            fetchError = .locationDisabled
-        }
-    }
-    
-    private func checkLocationAuthorization() {
-        guard let deviceLocationManager = deviceLocationManager else { return }
+    final class AppTabViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         
-        switch deviceLocationManager.authorizationStatus {
-        case .notDetermined:
-            deviceLocationManager.requestWhenInUseAuthorization()
-        case .restricted:
-            isShowingAlert = true
-            fetchError = .locationRestricted
-        case .denied:
-            isShowingAlert = true
-            fetchError = .locationDenied
-        case .authorizedAlways, .authorizedWhenInUse:
-            break
+        @Published var isShowingOnboardingView = false
+        @Published var fetchError: SipMatesError?
+        @Published var isShowingAlert = false
+        @AppStorage("hasSeenOnboardingView") var hasSeenOnboardingView = false {
+            didSet { isShowingOnboardingView = true }
+        }
+        
+        var deviceLocationManager: CLLocationManager?
+        
+        func runStartupChecks() {
+            if !hasSeenOnboardingView {
+                hasSeenOnboardingView = true
+            } else {
+                checkIfLocationServicesIsEnabled()
+            }
+        }
+        
+        func checkIfLocationServicesIsEnabled() {
+            if CLLocationManager.locationServicesEnabled() {
+                deviceLocationManager = CLLocationManager()
+                deviceLocationManager!.delegate = self
+            } else {
+                isShowingAlert = true
+                fetchError = .locationDisabled
+            }
+        }
+        
+        private func checkLocationAuthorization() {
+            guard let deviceLocationManager = deviceLocationManager else { return }
+            
+            switch deviceLocationManager.authorizationStatus {
+            case .notDetermined:
+                deviceLocationManager.requestWhenInUseAuthorization()
+            case .restricted:
+                isShowingAlert = true
+                fetchError = .locationRestricted
+            case .denied:
+                isShowingAlert = true
+                fetchError = .locationDenied
+            case .authorizedAlways, .authorizedWhenInUse:
+                break
 
-        @unknown default:
-            break
+            @unknown default:
+                break
+            }
+        }
+        
+        func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+            checkLocationAuthorization()
         }
     }
 }
 
-extension AppTabViewModel: CLLocationManagerDelegate {
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        checkLocationAuthorization()
-    }
-}
+

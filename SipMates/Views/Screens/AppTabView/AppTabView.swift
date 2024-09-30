@@ -38,7 +38,7 @@ struct AppTabView: View {
             viewModel.runStartupChecks()
         }
         .sheet(isPresented: $viewModel.isShowingOnboardingView, onDismiss: viewModel.checkIfLocationServicesIsEnabled) {
-            OnboardingView(isShowingOnboardingView: $viewModel.isShowingOnboardingView)
+            OnboardingView()
         }
         .tabViewDefaultBackground()
     }
