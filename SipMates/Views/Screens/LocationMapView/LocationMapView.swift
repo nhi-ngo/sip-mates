@@ -7,66 +7,56 @@
 
 import SwiftUI
 import MapKit
+import CoreLocationUI
 
 struct LocationMapView: View {
     
     @EnvironmentObject private var locationManager: LocationManager
-    @StateObject private var viewModel = LocationMapViewModel()
+    @State private var viewModel = LocationMapViewModel()
     
     var body: some View {
         ZStack {
-            Map(initialPosition: .region(viewModel.region)) {
-                UserAnnotation().tint(Color(.red))
+            Map(initialPosition: viewModel.cameraPosition) {
                 ForEach(locationManager.locations) { location in
-                    Annotation("custom", coordinate: location.location.coordinate, anchor: UnitPoint(x: 0.5, y: 0.75)) {
-                        SMAnnotation(location: location)
+                    Annotation(location.name, coordinate: location.location.coordinate) {
+                        SMAnnotation(location: location, number: 99)
                             .onTapGesture {
                                 locationManager.selectedLocation = location
                                 viewModel.isShowingDetailView = true
                             }
                     }
+                    .annotationTitles(.hidden)
                 }
+                
+                UserAnnotation()
             }
-            .task {
-                if locationManager.locations.isEmpty {
-                    do {
-                        viewModel.getLocations(for: locationManager)
-                    } catch SipMatesError.unableToGetLocations {
-                        viewModel.fetchError = .unableToGetLocations
-                    }
-                }
+        }
+        .sheet(isPresented: $viewModel.isShowingDetailView) {
+            NavigationView {
+                LocationDetailView(viewModel: LocationDetailViewModel(location: locationManager.selectedLocation!))
+                    .toolbar { Button("Dismiss") { viewModel.isShowingDetailView = false }}
             }
-            .sheet(isPresented: $viewModel.isShowingDetailView) {
-                NavigationView {
-                    LocationDetailView(viewModel: LocationDetailViewModel(location: locationManager.selectedLocation!))
-                        .toolbar {
-                            Button("Dismiss") {
-                                viewModel.isShowingDetailView = false
-                            }
-                        }
-                }
-                .tint(.brandPrimary)
+            .tint(.brandPrimary)
+        }
+        .overlay(alignment: .bottomLeading) {
+            LocationButton(.currentLocation) {
+                viewModel.requestAllowOnceLocationPermission()
             }
-            .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.fetchError) { fetchError in
-                switch fetchError {
-                case .locationDenied, .locationDisabled:
-                    Button("Settings") {
-                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                    }
-                    Button("Cancel", role: .cancel) {
-                        // OK button to dismiss
-                    }
-                case .unableToGetLocations, .locationRestricted:
-                    EmptyView()
-                }
-            } message: { fetchError in
-                Text(fetchError.failureReason)
-            }
+            .foregroundColor(.white)
+            .symbolVariant(.fill)
+            .tint(.red)
+            .labelStyle(.iconOnly)
+            .clipShape(Circle())
+            .padding(EdgeInsets(top: 0, leading: 20, bottom: 40, trailing: 0))
+        }
+        .alert(item: $viewModel.alertItem, content: { $0.alert })
+        .task {
+            if locationManager.locations.isEmpty { viewModel.getLocations(for: locationManager) }
         }
     }
 }
 
+
 #Preview {
-    LocationMapView()
-        .environmentObject(LocationManager())
+    LocationMapView().environmentObject(LocationManager())
 }

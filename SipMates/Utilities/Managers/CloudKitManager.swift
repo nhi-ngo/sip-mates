@@ -7,40 +7,8 @@
 
 import CloudKit
 
-enum SipMatesError: LocalizedError {
-    case unableToGetLocations
-    case locationRestricted
-    case locationDenied
-    case locationDisabled
-    
-    var errorDescription: String? {
-        switch self {
-        case .unableToGetLocations:
-            "Locations Error"
-        case .locationRestricted:
-            "Locations Restricted"
-        case .locationDenied:
-            "Locations Denied"
-        case .locationDisabled:
-            "Location Service Disabled"
-        }
-    }
-    
-    var failureReason: String {
-        switch self {
-        case .unableToGetLocations:
-            "Unable to retrieve locations at this time. \nPlease try again later."
-        case .locationRestricted:
-            "Location access is restricted."
-        case .locationDenied:
-            "SipMates does not have permission to access your location. To change that go to your phone's Settings > SipMates > Location"
-        case .locationDisabled:
-            "Your phone's location services are disabled. To change that go to your phone's Settings > Privacy > Location Services"
-        }
-    }
-}
-
 final class CloudKitManager {
+    
     static let shared = CloudKitManager()
     
     private init() {}
@@ -69,33 +37,16 @@ final class CloudKitManager {
         return records.map(SMLocation.init)
     }
     
-    func batchSave(records: [CKRecord]) {
-        // create a CKOperation to save our User and Profile Records
-        let operation = CKModifyRecordsOperation(recordsToSave: records)
-        
-        operation.modifyRecordsResultBlock = { result in
-            switch result {
-            case .success:
-                // TODO: show alert
-                print("Successfully created and uploaded profile to CloudKit")
-            case .failure:
-                // TODO: show alert
-                print("Error creating profile")
-            }
-        }
-        
-        CKContainer.default().publicCloudDatabase.add(operation)
+    func batchSave(records: [CKRecord]) async throws -> [CKRecord] {
+        let (savedResult, _) = try await container.publicCloudDatabase.modifyRecords(saving: records, deleting: [])
+        return savedResult.compactMap { _, result in try? result.get() }
     }
     
-    func fetchRecord(with id: CKRecord.ID, completed: @escaping (Result<CKRecord, Error>) -> Void) {
-        container.publicCloudDatabase.fetch(withRecordID: id) { record, error in
-            guard let record, error == nil else {
-                completed(.failure(error!))
-                print("Unable to fetch user record")
-                return
-            }
-            
-            completed(.success(record))
-        }
+    func save(record: CKRecord) async throws -> CKRecord {
+        return try await container.publicCloudDatabase.save(record)
+    }
+    
+    func fetchRecord(with id: CKRecord.ID) async throws -> CKRecord {
+        return try await container.publicCloudDatabase.record(for: id)
     }
 }

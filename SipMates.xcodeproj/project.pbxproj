@@ -14,6 +14,7 @@
 		37186FF02C81397500B1F118 /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FEF2C81397500B1F118 /* CloudKitManager.swift */; };
 		37186FF22C81411D00B1F118 /* LocationMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FF12C81411D00B1F118 /* LocationMapViewModel.swift */; };
 		37186FF42C83723900B1F118 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FF32C83723900B1F118 /* Constants.swift */; };
+		372854662D0EBFA400AB432E /* AlertItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372854652D0EBFA400AB432E /* AlertItem.swift */; };
 		376C579F2C91C24400669504 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C579E2C91C24400669504 /* OnboardingView.swift */; };
 		376C57A12C91C28700669504 /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C57A02C91C28700669504 /* LogoView.swift */; };
 		376C57A42C91C85D00669504 /* XDismissButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C57A32C91C85C00669504 /* XDismissButton.swift */; };
@@ -47,6 +48,7 @@
 		37186FEF2C81397500B1F118 /* CloudKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
 		37186FF12C81411D00B1F118 /* LocationMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapViewModel.swift; sourceTree = "<group>"; };
 		37186FF32C83723900B1F118 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		372854652D0EBFA400AB432E /* AlertItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertItem.swift; sourceTree = "<group>"; };
 		376C579E2C91C24400669504 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		376C57A02C91C28700669504 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		376C57A32C91C85C00669504 /* XDismissButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XDismissButton.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				37186FF32C83723900B1F118 /* Constants.swift */,
+				372854652D0EBFA400AB432E /* AlertItem.swift */,
 				37186FF92C837DA500B1F118 /* Managers */,
 				3778D9162C8C5149005F18B1 /* Extensions */,
 			);
@@ -199,8 +202,8 @@
 		37E00CF02C7E822400AE88EE /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				370C06212CA796C00021A91E /* AppTabView */,
 				376C579E2C91C24400669504 /* OnboardingView.swift */,
+				370C06212CA796C00021A91E /* AppTabView */,
 				37186FFA2C837DC700B1F118 /* LocationMapView */,
 				37186FFB2C837DEE00B1F118 /* LocationListView */,
 				37B8D0492C9BD3E10089ECC3 /* LocationDetailView */,
@@ -248,8 +251,8 @@
 		37FE3BB12C73E68900784FB8 /* SipMates */ = {
 			isa = PBXGroup;
 			children = (
-				37186FE82C80C98200B1F118 /* Model */,
 				37186FF52C83762200B1F118 /* Utilities */,
+				37186FE82C80C98200B1F118 /* Model */,
 				37E00CEF2C7E821900AE88EE /* Views */,
 				37FE3BB22C73E68900784FB8 /* SipMatesApp.swift */,
 				37BEFBEB2C74F21C00D4B717 /* SipMates.entitlements */,
@@ -350,6 +353,7 @@
 				376C57A12C91C28700669504 /* LogoView.swift in Sources */,
 				37186FF42C83723900B1F118 /* Constants.swift in Sources */,
 				37BEFBF32C74F5D600D4B717 /* LocationListView.swift in Sources */,
+				372854662D0EBFA400AB432E /* AlertItem.swift in Sources */,
 				379CD3BD2C752F7E00377157 /* LocationDetailView.swift in Sources */,
 				37E00CEA2C7E7B5A00AE88EE /* LocationCell.swift in Sources */,
 				37E00CEC2C7E7BAD00AE88EE /* AvatarView.swift in Sources */,

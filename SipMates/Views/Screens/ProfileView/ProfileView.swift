@@ -9,9 +9,10 @@ import SwiftUI
 import PhotosUI
 import CloudKit
 
+@MainActor
 struct ProfileView: View {
     
-    @StateObject private var viewModel = ProfileViewModel()
+    @State private var viewModel = ProfileViewModel()
     @FocusState private var dismissKeyboard: Bool
     
     var body: some View {
@@ -57,7 +58,7 @@ struct ProfileView: View {
                     Spacer()
                     
                     Button(action: {
-                        viewModel.createProfile()
+                        viewModel.determineButtonAction()
                     }, label: {
                         SMButton(title: "Create Profile")
                     })
@@ -78,7 +79,7 @@ struct ProfileView: View {
                 }
             }
         }
-        .task { try? await viewModel.getProfile() }
+        .task { viewModel.getProfile() }
         .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.profileError) { profileError in
             // Action - OK button to dismiss
         } message: { fetchError in
@@ -94,7 +95,7 @@ struct ProfileView: View {
 }
 
 struct ProfileImageView: View {
-    var viewModel: ProfileViewModel
+    var viewModel: ProfileView.ProfileViewModel
     @State private var selectedImage: PhotosPickerItem?
     
     var body: some View {

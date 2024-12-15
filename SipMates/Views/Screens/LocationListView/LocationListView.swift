@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LocationListView: View {
+    
     @EnvironmentObject private var locationManager: LocationManager
     
     var body: some View {

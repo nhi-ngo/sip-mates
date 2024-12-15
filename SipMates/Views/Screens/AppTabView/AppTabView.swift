@@ -11,50 +11,34 @@ struct AppTabView: View {
     
     @StateObject private var viewModel = AppTabViewModel()
     
+    // iOS 15 changes the default appearance of Tab bar from opaque to transparent. To make them opaque:
+    init() {
+        let appearance = UITabBarAppearance()
+        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+    }
+    
     var body: some View {
         TabView {
             LocationMapView()
-                .tabItem {
-                    Label("Map", systemImage: "map")
-                }
+                .tabItem { Label("Map", systemImage: "map") }
             
             LocationListView()
-                .tabItem {
-                    Label("Locations", systemImage: "building")
-                }
+                .tabItem { Label("Locations", systemImage: "building") }
             
-            NavigationStack {
-                ProfileView()
-            }
-            .tabItem {
-                Label("Profile", systemImage: "person.crop.circle")
-            }
-            .navigationTitle("Profile")
+            NavigationView { ProfileView() }
+                .tabItem { Label("Profile", systemImage: "person.crop.circle") }
         }
         .task {
             try? await CloudKitManager.shared.getUserRecord()
+            viewModel.checkIfHasSeenOnboard()
         }
-        .onAppear {
-            viewModel.runStartupChecks()
-        }
-        .sheet(isPresented: $viewModel.isShowingOnboardingView, onDismiss: viewModel.checkIfLocationServicesIsEnabled) {
+        .sheet(isPresented: $viewModel.isShowingOnboardView) {
             OnboardingView()
         }
-        .tabViewDefaultBackground()
     }
 }
 
 #Preview {
     AppTabView()
-}
-
-// iOS 15 changes the default appearance of Tab bars from opaque to transparent. To make them opaque:
-extension View {
-    func tabViewDefaultBackground() -> some View {
-        self.onAppear {
-            let tabBarAppearance = UITabBarAppearance()
-            tabBarAppearance.configureWithDefaultBackground()
-            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-        }
-    }
 }

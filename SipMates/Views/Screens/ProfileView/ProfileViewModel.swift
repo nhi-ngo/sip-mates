@@ -8,6 +8,138 @@
 import Foundation
 import CloudKit
 
+enum ProfileContext { case create, update }
+
+extension ProfileView {
+    
+    @MainActor @Observable
+    final class ProfileViewModel {
+        var firstName             = ""
+        var lastName              = ""
+        var companyName           = ""
+        var bio                   = ""
+        var avatar                = PlaceholderImage.avatar
+        var isLoading             = false
+        
+        var isShowingAlert = false
+        var profileError: ProfileError = .invalidProfile
+        
+        @ObservationIgnored
+        var profileContext: ProfileContext = .create
+        var buttonTitle: String { profileContext == .create ? "Create Profile" : "Update Profile" }
+        
+        private func isProfileValid() -> Bool {
+            guard !firstName.isEmpty,
+                  !lastName.isEmpty,
+                  !companyName.isEmpty,
+                  !bio.isEmpty,
+                  avatar != PlaceholderImage.avatar,
+                  bio.count <= 100 else { return false }
+            
+            return true
+        }
+        
+        func determineButtonAction() {
+            profileContext == .create ? createProfile() : updateProfile()
+        }
+        
+        private func createProfile() {
+            guard isProfileValid() else {
+                isShowingAlert = true
+                profileError = .invalidProfile
+                return
+            }
+            
+            // create CKRecord from profile view
+            let profileRecord = createProfileRecord()
+            guard let userRecord = CloudKitManager.shared.userRecord else {
+                isShowingAlert = true
+                profileError = .noUserRecord
+                return
+            }
+            
+            // create reference on UserRecord to the SMProfile we create
+            userRecord["userProfile"] = CKRecord.Reference(recordID: profileRecord.recordID, action: .none)
+            
+            showLoadingView()
+            
+            Task {
+                do {
+                    let records = try await CloudKitManager.shared.batchSave(records: [userRecord, profileRecord])
+                    for record in records where record.recordType == RecordType.profile {
+                        CloudKitManager.shared.profileRecordID = record.recordID
+                    }
+                    hideLoadingView()
+                    isShowingAlert = true
+                    profileError = .createProfileSuccess
+                } catch {
+                    hideLoadingView()
+                    isShowingAlert = true
+                    profileError = .createProfileFailure
+                }
+            }
+        }
+        
+        func getProfile() {
+            guard let userRecord = CloudKitManager.shared.userRecord else {
+                isShowingAlert = true
+                profileError = .noUserRecord
+                return
+            }
+                        
+            guard let profileReference = userRecord["userProfile"] as? CKRecord.Reference else {
+                print("Unable to get profile reference")
+                return
+            }
+
+            let _ = print("profileReference: ", profileReference)
+
+            let profileRecordID = profileReference.recordID
+            
+            showLoadingView()
+            
+            Task {
+                do {
+                    let record = try await CloudKitManager.shared.fetchRecord(with: profileRecordID)
+//                    existingProfileRecord = record
+                    
+                    let profile = SMProfile(record: record)
+                    firstName   = profile.firstName
+                    lastName    = profile.lastName
+                    companyName = profile.companyName
+                    bio         = profile.bio
+                    avatar      = profile.avatarImage
+                    let _ = print("success profile: ", profile)
+
+                    hideLoadingView()
+                } catch {
+                    isShowingAlert = true
+                    profileError = .unableToRetrieveProfile
+                    print("Failed fetching user record")
+                }
+            }
+        }
+        
+        private func updateProfile() {
+            
+        }
+        
+        private func createProfileRecord() -> CKRecord {
+            let profileRecord = CKRecord(recordType: RecordType.profile)
+            profileRecord[SMProfile.kFirstName] = firstName
+            profileRecord[SMProfile.kLastName] = lastName
+            profileRecord[SMProfile.kCompanyName] = companyName
+            profileRecord[SMProfile.kBio] = bio
+            profileRecord[SMProfile.kAvatar] = avatar.convertToCKAsset()
+            
+            return profileRecord
+        }
+        
+        private func showLoadingView() { isLoading = true }
+        private func hideLoadingView() { isLoading = false }
+    }
+}
+
 enum ProfileError: LocalizedError {
     case invalidProfile
     case noUserRecord
@@ -46,99 +178,4 @@ enum ProfileError: LocalizedError {
     }
 }
 
-@MainActor final class ProfileViewModel: ObservableObject {
-    @Published var firstName             = ""
-    @Published var lastName              = ""
-    @Published var companyName           = ""
-    @Published var bio                   = ""
-    @Published var avatar                = PlaceholderImage.avatar
-    @Published var isLoading             = false
-    
-    @Published var isShowingAlert = false
-    @Published var profileError: ProfileError = .invalidProfile
-    
-    func isProfileValid() -> Bool {
-        guard !firstName.isEmpty,
-              !lastName.isEmpty,
-              !companyName.isEmpty,
-              !bio.isEmpty,
-              avatar != PlaceholderImage.avatar,
-              bio.count <= 100 else { return false }
-        
-        return true
-    }
-    
-    func createProfile() {
-        guard isProfileValid() else {
-            isShowingAlert = true
-            profileError = .invalidProfile
-            return
-        }
-        
-        // create CKRecord from profile view
-        let profileRecord = createProfileRecord()
-        
-        guard let userRecord = CloudKitManager.shared.userRecord else {
-            isShowingAlert = true
-            profileError = .noUserRecord
-            return
-        }
-        
-        // create reference on UserRecord to the SMProfile we create
-        userRecord["userProfile"] = CKRecord.Reference(recordID: profileRecord.recordID, action: .deleteSelf)
-        
-        CloudKitManager.shared.batchSave(records: [userRecord, profileRecord])
-    }
-    
-    func getProfile() async throws {
-        guard let userRecord = CloudKitManager.shared.userRecord else {
-            isShowingAlert = true
-            profileError = .noUserRecord
-            return
-        }
-        
-        guard let profileReference = userRecord["userProfile"] as? CKRecord.Reference else {
-            print("Unable to get profile reference")
-            return
-        }
 
-        let profileRecordID = profileReference.recordID
-        
-        showLoadingView()
-        CloudKitManager.shared.fetchRecord(with: profileRecordID) { result in
-            DispatchQueue.main.async { [self] in
-                hideLoadingView()
-                
-                switch result {
-                case .success(let record):
-                    let profile  = SMProfile(record: record)
-                    firstName   = profile.firstName
-                    lastName    = profile.lastName
-                    companyName = profile.companyName
-                    bio          = profile.bio
-                    avatar      = profile.createAvatarImage()
-                    
-                case .failure(_):
-                    isShowingAlert = true
-                    profileError = .unableToRetrieveProfile
-                    print("Failed fetching user record")
-                    break
-                }
-            }
-        }
-    }
-    
-    private func createProfileRecord() -> CKRecord {
-        let profileRecord = CKRecord(recordType: RecordType.profile)
-        profileRecord[SMProfile.kFirstName] = firstName
-        profileRecord[SMProfile.kLastName] = lastName
-        profileRecord[SMProfile.kCompanyName] = companyName
-        profileRecord[SMProfile.kBio] = bio
-        profileRecord[SMProfile.kAvatar] = avatar.convertToCKAsset()
-        
-        return profileRecord
-    }
-    
-    private func showLoadingView() { isLoading = true }
-    private func hideLoadingView() { isLoading = false }
-}

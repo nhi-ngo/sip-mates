@@ -29,7 +29,7 @@ struct SMLocation: Identifiable {
     let phoneNumber: String
     
     init(record: CKRecord) {
-        id  = record.recordID
+        id           = record.recordID
         name         = record[SMLocation.kName] as? String ?? "N/A"
         description = record[SMLocation.kDescription] as? String ?? "N/A"
         squareAsset = record[SMLocation.kSquareAsset] as? CKAsset
@@ -40,13 +40,13 @@ struct SMLocation: Identifiable {
         phoneNumber = record[SMLocation.kPhoneNumber] as? String ?? "N/A"
     }
     
-    func createSquareImage() -> UIImage {
-        guard let asset = squareAsset else { return PlaceholderImage.square }
-        return asset.convertToUIImage(in: .square)
+    var squareImage: UIImage {
+        guard let squareAsset else { return PlaceholderImage.square }
+        return squareAsset.convertToUIImage(in: .square)
     }
     
-    func createBannerImage() -> UIImage {
-        guard let asset = bannerAsset else { return PlaceholderImage.banner }
-        return asset.convertToUIImage(in: .banner)
+    var bannerImage: UIImage {
+        guard let bannerAsset else { return PlaceholderImage.banner }
+        return bannerAsset.convertToUIImage(in: .banner)
     }
 }

@@ -16,16 +16,15 @@ struct SMProfile {
     static let kBio           = "bio"
     static let kIsCheckedIn  = "isCheckedIn"
     
-    let ckRecordId: CKRecord.ID
+    let id: CKRecord.ID
     let firstName: String
     let lastName: String
     let avatar: CKAsset!
     let companyName: String
     let bio: String
-    let isCheckedIn: CKRecord.Reference? = nil
 
     init(record: CKRecord) {
-        ckRecordId   = record.recordID
+        id           = record.recordID
         firstName    = record[SMProfile.kFirstName] as? String ?? "N/A"
         lastName    = record[SMProfile.kLastName] as? String ?? "N/A"
         avatar       = record[SMProfile.kAvatar] as? CKAsset
@@ -33,8 +32,8 @@ struct SMProfile {
         bio          = record[SMProfile.kBio] as? String ?? "N/A"
     }
     
-    func createAvatarImage() -> UIImage {
-        guard let avatar = avatar else { return PlaceholderImage.avatar }
+    var avatarImage: UIImage {
+        guard let avatar else { return PlaceholderImage.avatar }
         return avatar.convertToUIImage(in: .square)
     }
 }
