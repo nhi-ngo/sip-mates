@@ -5,7 +5,6 @@
 //  Created by Nhi Ngo on 9/12/24.
 //
 
-import Foundation
 import CloudKit
 
 enum ProfileContext { case create, update }
@@ -19,14 +18,20 @@ extension ProfileView {
         var companyName           = ""
         var bio                   = ""
         var avatar                = PlaceholderImage.avatar
-        var isLoading             = false
+        var isShowingPhotoPicker = false
+        var isLoading            = false
+        var isCheckedIn          = false
+        var alertItem: AlertItem?
         
-        var isShowingAlert = false
-        var profileError: ProfileError = .invalidProfile
+        @ObservationIgnored
+        private var existingProfileRecord: CKRecord? {
+            didSet { profileContext = .update }
+        }
         
         @ObservationIgnored
         var profileContext: ProfileContext = .create
         var buttonTitle: String { profileContext == .create ? "Create Profile" : "Update Profile" }
+        
         
         private func isProfileValid() -> Bool {
             guard !firstName.isEmpty,
@@ -43,18 +48,56 @@ extension ProfileView {
             profileContext == .create ? createProfile() : updateProfile()
         }
         
+        func getCheckedInStatus() {
+            guard let profileRecordID = CloudKitManager.shared.profileRecordID else { return }
+            
+            Task {
+                do {
+                    let record = try await CloudKitManager.shared.fetchRecord(with: profileRecordID)
+                    if let _ = record[SMProfile.kIsCheckedIn] as? CKRecord.Reference {
+                        isCheckedIn = true
+                    } else {
+                        isCheckedIn = false
+                    }
+                } catch {
+                    print("Unable to get checked in status")
+                }
+            }
+        }
+        
+        func checkOut() {
+            guard let profileID = CloudKitManager.shared.profileRecordID else {
+                alertItem = AlertContext.unableToGetProfile
+                return
+            }
+            
+            showLoadingView()
+            
+            Task {
+                do {
+                    let record = try await CloudKitManager.shared.fetchRecord(with: profileID)
+                    record[SMProfile.kIsCheckedIn] = nil
+                    
+                    let _ = try await CloudKitManager.shared.save(record: record)
+                    isCheckedIn = false
+                    hideLoadingView()
+                } catch {
+                    hideLoadingView()
+                    alertItem = AlertContext.unableToCheckInOrOut
+                }
+            }
+        }
+        
         private func createProfile() {
             guard isProfileValid() else {
-                isShowingAlert = true
-                profileError = .invalidProfile
+                alertItem = AlertContext.invalidProfile
                 return
             }
             
             // create CKRecord from profile view
             let profileRecord = createProfileRecord()
             guard let userRecord = CloudKitManager.shared.userRecord else {
-                isShowingAlert = true
-                profileError = .noUserRecord
+                alertItem = AlertContext.noUserRecord
                 return
             }
             
@@ -67,23 +110,21 @@ extension ProfileView {
                 do {
                     let records = try await CloudKitManager.shared.batchSave(records: [userRecord, profileRecord])
                     for record in records where record.recordType == RecordType.profile {
+                        existingProfileRecord = record
                         CloudKitManager.shared.profileRecordID = record.recordID
                     }
                     hideLoadingView()
-                    isShowingAlert = true
-                    profileError = .createProfileSuccess
+                    alertItem = AlertContext.createProfileSuccess
                 } catch {
                     hideLoadingView()
-                    isShowingAlert = true
-                    profileError = .createProfileFailure
+                    alertItem = AlertContext.createProfileFailure
                 }
             }
         }
         
         func getProfile() {
             guard let userRecord = CloudKitManager.shared.userRecord else {
-                isShowingAlert = true
-                profileError = .noUserRecord
+                alertItem = AlertContext.noUserRecord
                 return
             }
                         
@@ -101,7 +142,7 @@ extension ProfileView {
             Task {
                 do {
                     let record = try await CloudKitManager.shared.fetchRecord(with: profileRecordID)
-//                    existingProfileRecord = record
+                    existingProfileRecord = record
                     
                     let profile = SMProfile(record: record)
                     firstName   = profile.firstName
@@ -113,15 +154,41 @@ extension ProfileView {
 
                     hideLoadingView()
                 } catch {
-                    isShowingAlert = true
-                    profileError = .unableToRetrieveProfile
+                    alertItem = AlertContext.unableToGetProfile
                     print("Failed fetching user record")
                 }
             }
         }
         
         private func updateProfile() {
+            guard isProfileValid() else {
+                alertItem = AlertContext.invalidProfile
+                return
+            }
             
+            guard let existingProfileRecord else {
+                alertItem = AlertContext.unableToGetProfile
+                return
+            }
+            
+            existingProfileRecord[SMProfile.kFirstName] = firstName
+            existingProfileRecord[SMProfile.kLastName] = lastName
+            existingProfileRecord[SMProfile.kCompanyName] = companyName
+            existingProfileRecord[SMProfile.kBio] = bio
+            existingProfileRecord[SMProfile.kAvatar] = avatar.convertToCKAsset()
+            
+            showLoadingView()
+            
+            Task {
+                do {
+                    let _ = try await CloudKitManager.shared.save(record: existingProfileRecord)
+                    hideLoadingView()
+                    alertItem = AlertContext.updateProfileSuccess
+                } catch {
+                    hideLoadingView()
+                    alertItem = AlertContext.updateProfileFailure
+                }
+            }
         }
         
         private func createProfileRecord() -> CKRecord {
@@ -137,44 +204,6 @@ extension ProfileView {
         
         private func showLoadingView() { isLoading = true }
         private func hideLoadingView() { isLoading = false }
-    }
-}
-
-enum ProfileError: LocalizedError {
-    case invalidProfile
-    case noUserRecord
-    case createProfileSuccess
-    case createProfileFailure
-    case unableToRetrieveProfile
-    
-    var errorDescription: String? {
-        switch self {
-        case .invalidProfile:
-            "Invalid Profile"
-        case .noUserRecord:
-            "No User Record"
-        case .createProfileSuccess:
-            "Profile created successfully!"
-        case .createProfileFailure:
-            "Failed to create profile"
-        case .unableToRetrieveProfile:
-            "Failed to retrieve profile"
-        }
-    }
-    
-    var failureReason: String {
-        switch self {
-        case .invalidProfile:
-            "All fields are required as well as a profile photo. Your bio must be < 100 characters. \nPlease try again."
-        case .noUserRecord:
-            "You must log into iCloud on your phone in order to utilize SipMates' Profile."
-        case .createProfileSuccess:
-            "Your profile has successfully been created."
-        case .createProfileFailure:
-            "Unable to create profile at this time. \nPlease try again later."
-        case .unableToRetrieveProfile:
-            "Unable to retrieve profile at this time. \nPlease try again later."
-        }
     }
 }
 

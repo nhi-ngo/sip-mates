@@ -13,83 +13,95 @@ import CloudKit
 struct ProfileView: View {
     
     @State private var viewModel = ProfileViewModel()
-    @FocusState private var dismissKeyboard: Bool
+    @FocusState private var focusedTextField: ProfileTextField?
+    
+    enum ProfileTextField {
+        case firstName, lastName, companyName, bio
+    }
     
     var body: some View {
         ZStack {
             VStack {
-                ZStack {
-                    Color(.secondarySystemBackground)
-                        .frame(height: 130)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                HStack(spacing: 15) {
+                    ProfileImageView(viewModel: viewModel)
                     
-                    HStack(spacing: 15) {
-                        ProfileImageView(viewModel: viewModel)
+                    VStack(spacing: 1) {
+                        TextField("First Name", text: $viewModel.firstName)
+                            .profileNameStyle()
+                            .focused($focusedTextField, equals: .firstName)
+                            .onSubmit { focusedTextField = .lastName }
+                            .submitLabel(.next)
                         
-                        VStack(spacing: 1) {
-                            TextField("First Name", text: $viewModel.firstName)
-                                .profileNameStyle()
-                                .focused($dismissKeyboard)
-                            
-                            TextField("Last Name", text: $viewModel.lastName)
-                                .profileNameStyle()
-                                .focused($dismissKeyboard)
-                            
-                            TextField("Company Name", text: $viewModel.companyName)
-                                .focused($dismissKeyboard)
-                        }
+                        TextField("Last Name", text: $viewModel.lastName)
+                            .profileNameStyle()
+                            .focused($focusedTextField, equals: .lastName)
+                            .onSubmit { focusedTextField = .companyName }
+                            .submitLabel(.next)
                         
-                        Spacer()
+                        TextField("Company Name", text: $viewModel.companyName)
+                            .focused($focusedTextField, equals: .companyName)
+                            .onSubmit { focusedTextField = .bio }
+                            .submitLabel(.next)
                     }
-                    .padding()
+                    .padding(.trailing, 16)
                 }
+                .padding(.vertical)
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(12)
                 .padding(.horizontal)
                 
                 VStack(spacing: 8) {
-                    CharactersRemainView(currentCount: viewModel.bio.count)
+                    HStack {
+                        CharactersRemainView(currentCount: viewModel.bio.count)
+                        
+                        Spacer()
+                        
+                        if viewModel.isCheckedIn {
+                            Button {
+                                viewModel.checkOut()
+                            } label: {
+                                CheckOutButton()
+                            }
+                            .disabled(viewModel.isLoading)
+                        }
+                    }
                     
-                    TextEditor(text: $viewModel.bio)
-                        .disabled(100 - viewModel.bio.count == 0)
-                        .frame(height: 100)
-                        .padding()
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.secondary, lineWidth: 1))
-                        .focused($dismissKeyboard)
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        viewModel.determineButtonAction()
-                    }, label: {
-                        SMButton(title: "Create Profile")
-                    })
+                    TextField("Enter your bio", text: $viewModel.bio, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(4...6)
+                        .focused($focusedTextField, equals: .bio)
                 }
                 .padding()
                 
                 Spacer()
+                
+                Button {
+                    viewModel.determineButtonAction()
+                } label: {
+                    SMButton(title: viewModel.buttonTitle)
+                }
+                .padding(.bottom)
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Button("Dismiss") { focusedTextField = nil }
+                }
             }
             
             if viewModel.isLoading { LoadingView() }
         }
         .navigationTitle("Profile")
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") {
-                    dismissKeyboard.toggle()
-                }
-            }
+        .ignoresSafeArea(.keyboard)
+        .task {
+            viewModel.getProfile()
+            viewModel.getCheckedInStatus()
         }
-        .task { viewModel.getProfile() }
-        .alert(isPresented: $viewModel.isShowingAlert, error: viewModel.profileError) { profileError in
-            // Action - OK button to dismiss
-        } message: { fetchError in
-            Text(fetchError.failureReason)
-        }
+        .alert(item: $viewModel.alertItem, content: { $0.alert })
     }
 }
 
 #Preview {
-    NavigationStack {
+    NavigationView {
         ProfileView()
     }
 }
@@ -103,7 +115,12 @@ struct ProfileImageView: View {
             AvatarView(size: 84, image: viewModel.avatar)
             
             PhotosPicker(selection: $selectedImage, matching: .images) {
-                EditImage()
+                Image(systemName: "square.and.pencil")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 14, height: 14)
+                    .foregroundStyle(.white)
+                    .padding(.bottom, 5)
             }
         }
         .padding(.leading, 12)
@@ -135,38 +152,34 @@ extension View {
     }
 }
 
-struct EditImage: View {
-    var body: some View {
-        Image(systemName: "square.and.pencil")
-            .resizable()
-            .scaledToFit()
-            .frame(width: 14, height: 14)
-            .foregroundStyle(.white)
-            .padding(.bottom, 5)
-    }
-}
-
 struct CharactersRemainView: View {
     var currentCount: Int
     
     var body: some View {
-        HStack {
-            Text("Bio: ")
-                .font(.callout)
-                .foregroundStyle(.secondary)
-            +
-            Text("\(100 - currentCount)")
-                .bold()
-                .font(.callout)
-                .foregroundStyle(.brandPrimary)
-            +
-            Text(" characters remain")
-                .foregroundStyle(.secondary)
-            
-            Spacer()
-            
-            Image(systemName: "mappin.and.ellipse")
-            Text("Check Out")
-        }
+        
+        Text("Bio: ")
+            .font(.callout)
+            .foregroundStyle(.secondary)
+        +
+        Text("\(100 - currentCount)")
+            .bold()
+            .font(.callout)
+            .foregroundStyle(.brandPrimary)
+        +
+        Text(" characters remain")
+            .font(.callout)
+            .foregroundStyle(.secondary)
+    }
+}
+
+struct CheckOutButton: View {
+    var body: some View {
+        Label("Check Out", systemImage: "mappin.and.ellipse")
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundStyle(.white)
+            .padding(10)
+            .frame(height: 28)
+            .background(.red)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
