@@ -101,7 +101,7 @@ extension ProfileView {
                 return
             }
             
-            // create reference on UserRecord to the SMProfile we create
+            // create reference on Users Record Types in CloudKit
             userRecord["userProfile"] = CKRecord.Reference(recordID: profileRecord.recordID, action: .none)
             
             showLoadingView()

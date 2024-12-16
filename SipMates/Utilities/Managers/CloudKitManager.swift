@@ -49,4 +49,20 @@ final class CloudKitManager {
     func fetchRecord(with id: CKRecord.ID) async throws -> CKRecord {
         return try await container.publicCloudDatabase.record(for: id)
     }
+    
+    // Retrieves checked in profiles for specific restaurant
+    /// - Parameter locationID: location  ID for the restaurant
+    /// - Returns: a list of users checked into the restaurant
+    func getCheckedInProfiles(for locationID: CKRecord.ID) async throws -> [SMProfile] {
+        print("TODO getCheckedInProfiles()")
+        return []
+    }
+    
+    func getCheckedInProfilesDictionary() {
+        print("TODO getCheckedInProfilesDictionary()")
+    }
+    
+    func getCheckedInProfilesCount() {
+        print("TODO getCheckedInProfilesCount()")
+    }
 }

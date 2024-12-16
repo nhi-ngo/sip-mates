@@ -9,81 +9,33 @@ import SwiftUI
 
 struct LocationDetailView: View {
     
-    @ObservedObject var viewModel: LocationDetailViewModel
+    @Bindable var viewModel: LocationDetailViewModel
     
     var body: some View {
         ZStack {
             VStack(spacing: 16) {
                 BannerImageView(image: viewModel.location.bannerImage)
-                
-                HStack() {
-                    AddressView(address: viewModel.location.address)
-                    Spacer()
-                }
-                .padding(.horizontal)
-                
+                AddressHStack(address: viewModel.location.address)
                 DescriptionView(text: viewModel.location.description)
-                
-                ZStack {
-                    Capsule()
-                        .frame(height: 80)
-                        .foregroundStyle(Color(.secondarySystemBackground))
-                    
-                    HStack(spacing: 20) {
-                        Button(action: {
-                            viewModel.getDirectionsToLocation()
-                        }, label: {
-                            LocationActionButton(imageName: "location.fill")
-                        })
-                        
-                        Link(destination: URL(string: viewModel.location.websiteURL)!, label: {
-                            LocationActionButton(imageName: "network")
-                        })
-                        
-                        Button(action: {
-                            viewModel.callLocation()
-                        }, label: {
-                            LocationActionButton(imageName: "phone.fill")
-                        })
-                        
-                        Button(action: {
-                            //TODO
-                        }, label: {
-                            LocationActionButton(imageName: "person.fill.checkmark")
-                        })
-                    }
-                }
-                .padding(.horizontal)
-                
+                ActionButtonHStack(viewModel: viewModel)
                 Text("Who's Here?").bold().font(.title2)
-                
-                ScrollView {
-                    LazyVGrid(columns: [GridItem](repeating: GridItem(.flexible()), count: 3), content: {
-                        FirstNameAvatarView(firstName: "Nhi")
-                            .onTapGesture {
-                                withAnimation {
-                                    viewModel.isShowingProfileModal = true
-                                }
-                            }
-                            
-                    })
-                }
-                
+                AvatarGridView(viewModel: viewModel)
                 Spacer()
             }
             
             if viewModel.isShowingProfileModal {
-                Color(.black)
-                    .ignoresSafeArea()
-                    .opacity(0.9)
-                
-                ProfileModalView(profile: SMProfile(record: MockData.profile),
+                Color(.black).ignoresSafeArea().opacity(0.9)
+                ProfileModalView(profile: viewModel.selectedProfile!,
                                  isShowingProfileModal: $viewModel.isShowingProfileModal)
             }
         }
+        .task {
+            viewModel.getCheckedInProfiles()
+            viewModel.getCheckedInStatus()
+        }
         .navigationTitle(viewModel.location.name)
         .navigationBarTitleDisplayMode(.inline)
-        
+        .alert(item: $viewModel.alertItem, content: { $0.alert })
     }
 }
 
@@ -113,13 +65,13 @@ struct LocationActionButton: View {
 }
 
 struct FirstNameAvatarView: View {
-    var firstName: String
+    var profile: SMProfile
     
     var body: some View {
         VStack {
-            AvatarView(size: 64, image: PlaceholderImage.avatar)
+            AvatarView(size: 64, image: profile.avatarImage)
             
-            Text(firstName)
+            Text(profile.firstName)
                 .bold()
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
@@ -138,13 +90,18 @@ struct BannerImageView: View {
     }
 }
 
-struct AddressView: View {
+struct AddressHStack: View {
     var address: String
     
     var body: some View {
-        Label(address, systemImage: "mappin.and.ellipse")
-            .font(.caption)
-            .foregroundStyle(.secondary)
+        HStack {
+            Label(address, systemImage: "mappin.and.ellipse")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Spacer()
+        }
+        .padding(.horizontal)
     }
 }
 
@@ -157,5 +114,64 @@ struct DescriptionView: View {
             .minimumScaleFactor(0.75)
             .frame(height: 70)
             .padding(.horizontal)
+    }
+}
+
+struct ActionButtonHStack: View {
+    var viewModel: LocationDetailViewModel
+    
+    var body: some View {
+        HStack(spacing: 20) {
+            Button(action: {
+                viewModel.getDirectionsToLocation()
+            }, label: {
+                LocationActionButton(imageName: "location.fill")
+            })
+            
+            Link(destination: URL(string: viewModel.location.websiteURL)!, label: {
+                LocationActionButton(imageName: "network")
+            })
+            
+            Button(action: {
+                viewModel.callLocation()
+            }, label: {
+                LocationActionButton(imageName: "phone.fill")
+            })
+            
+            if let _ = CloudKitManager.shared.profileRecordID {
+                Button(action: {
+                    viewModel.updateCheckInStatus(to: viewModel.isCheckedIn ? .checkedOut : .checkedIn)
+                }, label: {
+                    LocationActionButton(color: viewModel.checkInButtonColor, imageName: viewModel.checkInButtonImage)
+                })
+                .disabled(viewModel.isLoading)
+            }
+        }
+        .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+        .background(Color(.secondarySystemBackground))
+        .clipShape(Capsule())
+    }
+}
+
+struct AvatarGridView: View {
+    var viewModel: LocationDetailViewModel
+    
+    var body: some View {
+        ZStack {
+            if viewModel.checkedInProfiles.isEmpty {
+                ContentUnavailableView("Nobody's Here", systemImage: "person.slash", description: Text("Nobody has checked in yet."))
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: [GridItem](repeating: GridItem(.flexible()), count: 3), content: {
+                        ForEach(viewModel.checkedInProfiles) { profile in
+                            FirstNameAvatarView(profile: profile)
+                                .onTapGesture {
+                                    withAnimation {viewModel.isShowingProfileModal = true }
+                                }
+                        }
+                    })
+                }
+            }
+        }
     }
 }

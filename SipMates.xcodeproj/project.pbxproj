@@ -15,6 +15,7 @@
 		37186FF22C81411D00B1F118 /* LocationMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FF12C81411D00B1F118 /* LocationMapViewModel.swift */; };
 		37186FF42C83723900B1F118 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37186FF32C83723900B1F118 /* Constants.swift */; };
 		372854662D0EBFA400AB432E /* AlertItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372854652D0EBFA400AB432E /* AlertItem.swift */; };
+		372854682D0FC38D00AB432E /* LocationListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372854672D0FC38D00AB432E /* LocationListViewModel.swift */; };
 		376C579F2C91C24400669504 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C579E2C91C24400669504 /* OnboardingView.swift */; };
 		376C57A12C91C28700669504 /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C57A02C91C28700669504 /* LogoView.swift */; };
 		376C57A42C91C85D00669504 /* XDismissButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C57A32C91C85C00669504 /* XDismissButton.swift */; };
@@ -49,6 +50,7 @@
 		37186FF12C81411D00B1F118 /* LocationMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapViewModel.swift; sourceTree = "<group>"; };
 		37186FF32C83723900B1F118 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		372854652D0EBFA400AB432E /* AlertItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertItem.swift; sourceTree = "<group>"; };
+		372854672D0FC38D00AB432E /* LocationListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListViewModel.swift; sourceTree = "<group>"; };
 		376C579E2C91C24400669504 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		376C57A02C91C28700669504 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		376C57A32C91C85C00669504 /* XDismissButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XDismissButton.swift; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				37BEFBF22C74F5D600D4B717 /* LocationListView.swift */,
+				372854672D0FC38D00AB432E /* LocationListViewModel.swift */,
 			);
 			path = LocationListView;
 			sourceTree = "<group>";
@@ -369,6 +372,7 @@
 				376C57A42C91C85D00669504 /* XDismissButton.swift in Sources */,
 				3791FF982C95CB7D00B63DA4 /* UIImage+Ext.swift in Sources */,
 				37B8D0462C9AB1440089ECC3 /* LoadingView.swift in Sources */,
+				372854682D0FC38D00AB432E /* LocationListViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

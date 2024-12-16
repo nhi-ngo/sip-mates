@@ -8,7 +8,7 @@
 import CloudKit
 import UIKit
 
-struct SMProfile {
+struct SMProfile: Identifiable {
     static let kFirstName    = "firstName"
     static let kLastName     = "lastName"
     static let kAvatar       = "avatar"
