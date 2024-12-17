@@ -37,6 +37,28 @@ final class CloudKitManager {
         return records.map(SMLocation.init)
     }
     
+    
+    // Retrieves checked in profiles for specific restaurant
+    /// - Parameter locationID: location  ID for the restaurant
+    /// - Returns: a list of users checked into the restaurant
+    func getCheckedInProfiles(for locationID: CKRecord.ID) async throws -> [SMProfile] {
+        let reference = CKRecord.Reference(recordID: locationID, action: .none)
+        let predicate = NSPredicate(format: "isCheckedIn == %@", reference)
+        let query = CKQuery(recordType: RecordType.profile, predicate: predicate)
+        
+        let (matchResults, _) = try await container.publicCloudDatabase.records(matching: query)
+        let records = matchResults.compactMap { _, result in try? result.get() }
+        return records.map(SMProfile.init)
+    }
+    
+    func getCheckedInProfilesDictionary() {
+        print("TODO getCheckedInProfilesDictionary()")
+    }
+    
+    func getCheckedInProfilesCount() {
+        print("TODO getCheckedInProfilesCount()")
+    }
+    
     func batchSave(records: [CKRecord]) async throws -> [CKRecord] {
         let (savedResult, _) = try await container.publicCloudDatabase.modifyRecords(saving: records, deleting: [])
         return savedResult.compactMap { _, result in try? result.get() }
@@ -48,21 +70,5 @@ final class CloudKitManager {
     
     func fetchRecord(with id: CKRecord.ID) async throws -> CKRecord {
         return try await container.publicCloudDatabase.record(for: id)
-    }
-    
-    // Retrieves checked in profiles for specific restaurant
-    /// - Parameter locationID: location  ID for the restaurant
-    /// - Returns: a list of users checked into the restaurant
-    func getCheckedInProfiles(for locationID: CKRecord.ID) async throws -> [SMProfile] {
-        print("TODO getCheckedInProfiles()")
-        return []
-    }
-    
-    func getCheckedInProfilesDictionary() {
-        print("TODO getCheckedInProfilesDictionary()")
-    }
-    
-    func getCheckedInProfilesCount() {
-        print("TODO getCheckedInProfilesCount()")
     }
 }

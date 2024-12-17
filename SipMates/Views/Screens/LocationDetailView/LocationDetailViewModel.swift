@@ -117,6 +117,11 @@ final class LocationDetailViewModel {
         }
     }
     
+    func show(_ profile: SMProfile) {
+        selectedProfile = profile
+        isShowingProfileModal = true
+    }
+    
     private func showLoadingView() { isLoading = true }
     private func hideLoadingView() { isLoading = false }
 }

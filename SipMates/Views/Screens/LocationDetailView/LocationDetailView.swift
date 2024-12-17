@@ -166,7 +166,7 @@ struct AvatarGridView: View {
                         ForEach(viewModel.checkedInProfiles) { profile in
                             FirstNameAvatarView(profile: profile)
                                 .onTapGesture {
-                                    withAnimation {viewModel.isShowingProfileModal = true }
+                                    withAnimation { viewModel.show(profile) }
                                 }
                         }
                     })
