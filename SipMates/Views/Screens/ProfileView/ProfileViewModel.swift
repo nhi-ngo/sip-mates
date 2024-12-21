@@ -60,13 +60,13 @@ extension ProfileView {
                         isCheckedIn = false
                     }
                 } catch {
-                    print("Unable to get checked in status")
+                    alertItem = AlertContext.unableToGetCheckInStatus
                 }
             }
         }
         
         func checkOut() {
-            guard let profileID = CloudKitManager.shared.profileRecordID else {
+            guard let profileRecordID = CloudKitManager.shared.profileRecordID else {
                 alertItem = AlertContext.unableToGetProfile
                 return
             }
@@ -75,8 +75,9 @@ extension ProfileView {
             
             Task {
                 do {
-                    let record = try await CloudKitManager.shared.fetchRecord(with: profileID)
+                    let record = try await CloudKitManager.shared.fetchRecord(with: profileRecordID)
                     record[SMProfile.kIsCheckedIn] = nil
+                    record[SMProfile.kIsCheckedInNilCheck] = nil
                     
                     let _ = try await CloudKitManager.shared.save(record: record)
                     isCheckedIn = false
@@ -133,8 +134,6 @@ extension ProfileView {
                 return
             }
 
-            let _ = print("profileReference: ", profileReference)
-
             let profileRecordID = profileReference.recordID
             
             showLoadingView()
@@ -150,12 +149,10 @@ extension ProfileView {
                     companyName = profile.companyName
                     bio         = profile.bio
                     avatar      = profile.avatarImage
-                    let _ = print("success profile: ", profile)
 
                     hideLoadingView()
                 } catch {
                     alertItem = AlertContext.unableToGetProfile
-                    print("Failed fetching user record")
                 }
             }
         }

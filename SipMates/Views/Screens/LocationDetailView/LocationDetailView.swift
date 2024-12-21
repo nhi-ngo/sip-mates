@@ -172,6 +172,8 @@ struct AvatarGridView: View {
                     })
                 }
             }
+            
+            if viewModel.isLoading { LoadingView() }
         }
     }
 }

@@ -51,8 +51,22 @@ final class CloudKitManager {
         return records.map(SMProfile.init)
     }
     
-    func getCheckedInProfilesDictionary() {
-        print("TODO getCheckedInProfilesDictionary()")
+    func getCheckedInProfilesDictionary() async throws -> [CKRecord.ID: [SMProfile]] {
+        let predicate = NSPredicate(format: "isCheckedInNilCheck == 1")
+        let query = CKQuery(recordType: RecordType.profile, predicate: predicate)
+        
+        let (matchResults, _) = try await container.publicCloudDatabase.records(matching: query)
+        let records = matchResults.compactMap { _, result in try? result.get() }
+        
+        var checkedInProfiles: [CKRecord.ID: [SMProfile]] = [:]
+        
+        for record in records {
+            let profile = SMProfile(record: record)
+            guard let locationRef = record[SMProfile.kIsCheckedIn] as? CKRecord.Reference else { continue }
+            checkedInProfiles[locationRef.recordID, default: []].append(profile)
+        }
+                
+        return checkedInProfiles
     }
     
     func getCheckedInProfilesCount() {

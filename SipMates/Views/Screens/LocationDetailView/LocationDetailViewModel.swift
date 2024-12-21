@@ -48,18 +48,10 @@ final class LocationDetailViewModel {
     
     func getCheckedInStatus() {
         guard let profileRecordID = CloudKitManager.shared.profileRecordID else { return }
-        
-        Task {
-            do {
-                let record = try await CloudKitManager.shared.fetchRecord(with: profileRecordID)
-                if let reference = record[SMProfile.kIsCheckedIn] as? CKRecord.Reference {
-                    isCheckedIn = reference.recordID == location.id
-                } else {
-                    isCheckedIn = false
-                }
-            } catch {
-                alertItem = AlertContext.unableToGetCheckInStatus
-            }
+        if checkedInProfiles.map({ $0.id == profileRecordID }).count > 0 {
+            isCheckedIn = true
+        } else {
+            isCheckedIn = false
         }
     }
     
@@ -81,8 +73,10 @@ final class LocationDetailViewModel {
                 switch checkInStatus {
                 case .checkedIn:
                     record[SMProfile.kIsCheckedIn] = CKRecord.Reference(recordID: location.id, action: .none)
+                    record[SMProfile.kIsCheckedInNilCheck] = 1
                 case .checkedOut:
                     record[SMProfile.kIsCheckedIn] = nil
+                    record[SMProfile.kIsCheckedInNilCheck] = nil
                 }
                 
                 let savedRecord = try await CloudKitManager.shared.save(record: record)

@@ -10,6 +10,7 @@ import SwiftUI
 struct LocationCell: View {
     
     var location: SMLocation
+    var profiles: [SMProfile]
     
     var body: some View {
         HStack {
@@ -27,20 +28,24 @@ struct LocationCell: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
                 
-                HStack {
-                    AvatarView(size: 30, image: PlaceholderImage.avatar)
-                    AvatarView(size: 30, image: PlaceholderImage.avatar)
-                    AvatarView(size: 30, image: PlaceholderImage.avatar)
-                    AvatarView(size: 30, image: PlaceholderImage.avatar)
-                    AvatarView(size: 30, image: PlaceholderImage.avatar)
+                if profiles.isEmpty {
+                    Text("Nobody's Checked In")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 2)
+                } else {
+                    HStack {
+                        ForEach(profiles.indices, id: \.self) { index in
+                            AvatarView(size: 30, image: profiles[index].avatarImage)
+                        }
+                    }
                 }
             }
-            .padding(.leading, 5)
+            .padding(.leading)
         }
-        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
     }
 }
 
 #Preview {
-    LocationCell(location: SMLocation(record: MockData.location))
+    LocationCell(location: SMLocation(record: MockData.location), profiles: [])
 }
