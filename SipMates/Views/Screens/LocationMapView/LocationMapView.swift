@@ -19,7 +19,7 @@ struct LocationMapView: View {
             Map(initialPosition: viewModel.cameraPosition) {
                 ForEach(locationManager.locations) { location in
                     Annotation(location.name, coordinate: location.location.coordinate) {
-                        SMAnnotation(location: location, number: 99)
+                        SMAnnotation(location: location, number: viewModel.checkedInProfiles[location.id, default: 0])
                             .onTapGesture {
                                 locationManager.selectedLocation = location
                                 viewModel.isShowingDetailView = true
@@ -36,7 +36,6 @@ struct LocationMapView: View {
                 LocationDetailView(viewModel: LocationDetailViewModel(location: locationManager.selectedLocation!))
                     .toolbar { Button("Dismiss") { viewModel.isShowingDetailView = false }}
             }
-            .tint(.brandPrimary)
         }
         .overlay(alignment: .bottomLeading) {
             LocationButton(.currentLocation) {
@@ -52,6 +51,7 @@ struct LocationMapView: View {
         .alert(item: $viewModel.alertItem, content: { $0.alert })
         .task {
             if locationManager.locations.isEmpty { viewModel.getLocations(for: locationManager) }
+            viewModel.getCheckedInCounts()
         }
     }
 }

@@ -14,6 +14,7 @@ extension LocationMapView {
     @Observable
     final class LocationMapViewModel: NSObject, CLLocationManagerDelegate {
         
+        var checkedInProfiles: [CKRecord.ID: Int] = [:]
         var isShowingDetailView = false
         var alertItem: AlertItem?
         var cameraPosition: MapCameraPosition = .region(.init(center: CLLocationCoordinate2D(latitude: 37.331516,
@@ -51,6 +52,17 @@ extension LocationMapView {
                     locationManager.locations = try await CloudKitManager.shared.getLocations()
                 } catch {
                     alertItem = AlertContext.unableToGetLocations
+                }
+            }
+        }
+        
+        @MainActor
+        func getCheckedInCounts() {
+            Task {
+                do {
+                    checkedInProfiles = try await CloudKitManager.shared.getCheckedInProfilesCount()
+                } catch {
+                    alertItem = AlertContext.checkedInCount
                 }
             }
         }
