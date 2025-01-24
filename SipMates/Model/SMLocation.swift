@@ -8,7 +8,7 @@
 import CloudKit
 import UIKit
 
-struct SMLocation: Identifiable {
+struct SMLocation: Identifiable, Hashable {
     static let kName = "name"
     static let kDescription = "description"
     static let kSquareAsset = "squareAsset"

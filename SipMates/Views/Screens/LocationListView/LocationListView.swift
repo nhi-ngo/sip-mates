@@ -14,15 +14,16 @@ struct LocationListView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(locationManager.locations) { location in
-                    NavigationLink(destination: LocationDetailView(viewModel: LocationDetailViewModel(location: location)), label: {
-                       LocationCell(location: location, profiles: viewModel.checkedInProfiles[location.id, default: []])
-                   })
+            List(locationManager.locations) { location in
+                NavigationLink(value: location) {
+                    LocationCell(location: location, profiles: viewModel.checkedInProfiles[location.id, default: []])
                 }
             }
             .listStyle(.plain)
             .navigationTitle("Grub Spots")
+            .navigationDestination(for: SMLocation.self, destination: { location in
+                LocationDetailView(viewModel: LocationDetailViewModel(location: location))
+            })
             .task { await viewModel.getCheckedInProfilesDictionary() }
             .refreshable { await viewModel.getCheckedInProfilesDictionary() }
             .alert(item: $viewModel.alertItem, content: { $0.alert })
