@@ -24,12 +24,23 @@ struct LocationMapView: View {
                                 locationManager.selectedLocation = location
                                 viewModel.isShowingDetailView = true
                             }
+                            .contextMenu {
+                                Button("Get Directions", systemImage: "arrow.triangle.turn.up.right.circle") {
+                                    viewModel.getDirections(to: location)
+                                }
+                            }
                     }
                     .annotationTitles(.hidden)
                 }
                 
                 UserAnnotation()
+                
+                if let route = viewModel.route {
+                    MapPolyline(route)
+                        .stroke(.brandPrimary, lineWidth: 8)
+                }
             }
+            .tint(.red)
         }
         .sheet(isPresented: $viewModel.isShowingDetailView) {
             NavigationStack {

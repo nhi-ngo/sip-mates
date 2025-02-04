@@ -17,6 +17,7 @@ extension LocationMapView {
         var checkedInProfiles: [CKRecord.ID: Int] = [:]
         var isShowingDetailView = false
         var alertItem: AlertItem?
+        var route: MKRoute?
         var cameraPosition: MapCameraPosition = .region(.init(center: CLLocationCoordinate2D(latitude: 37.331516,
                                                                                               longitude: -121.891054),
                                                                latitudinalMeters: 1200,
@@ -64,6 +65,22 @@ extension LocationMapView {
                 } catch {
                     alertItem = AlertContext.checkedInCount
                 }
+            }
+        }
+        
+        @MainActor
+        func getDirections(to location: SMLocation) {
+            guard let userLocation = deviceLocationManager.location?.coordinate else { return }
+            let destination = location.location.coordinate
+            
+            let request = MKDirections.Request()
+            request.source = MKMapItem(placemark: .init(coordinate: userLocation))
+            request.destination = MKMapItem(placemark: .init(coordinate: destination))
+            request.transportType = .walking
+            
+            Task {
+                let directions = try? await MKDirections(request: request).calculate()
+                route = directions?.routes.first
             }
         }
     }
