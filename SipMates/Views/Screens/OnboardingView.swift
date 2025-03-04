@@ -39,7 +39,7 @@ struct OnboardingView: View {
                 
                 OnboardInfoView(imageName: "person.2.circle",
                                 title: "Find Friends",
-                                description: "See where other tourists are and join the party")
+                                description: "See where others are and join the party")
             }
             .padding(.horizontal, 40)
             
