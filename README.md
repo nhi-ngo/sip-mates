@@ -24,9 +24,6 @@ A **SwiftUI-based social check-in app** designed for **Apple developers attendin
     </tr>
 </table>
 
-## TestFlight  
-[Download on TestFlight](#) *(Update with actual link)*  
-
 ## Technologies  
 - SwiftUI  
 - CloudKit  
